@@ -31,9 +31,22 @@ Canonical ports from `ports.env`:
 ## Data Flow
 
 - ui → backend: HTTP (API calls), WebSocket (real-time events)
+- ui → keycloak: OIDC redirect for authentication (authorization code flow)
+- ui → minio: Direct upload/download via presigned URLs (bypasses backend proxy)
 - backend → postgis: SQL (persistent data)
 - backend → redis: cache, pub/sub, presence
 - backend → minio: S3-compatible object storage (images, exports)
 - backend → titiler: tile rendering requests
 - backend ↔ keycloak: OIDC token validation, user info
 - keycloak → postgis: user/role persistence
+
+## Frontend Data Flow
+
+- `AppComponent` → `RouterOutlet` → route-guarded pages (`login` | `sites` | `dashboard`)
+- `DashboardComponent` → composes `MapComponent`, panels, timeline, modals
+- `MapComponent` → owns plain-class helpers (`MapEventWiring`, `MapSourceManager`, etc.)
+- `EntityService` → per-type `EntityStore<T>` → `BehaviorSubject` streams → components
+- `WebSocketService` → `WebSocketEventRouterService` → domain services (entity, delivery, POI, alert, etc.)
+- `TemporalContextService` → drives all date/shift/scrubber-dependent fetches and filtering
+- `ApiService` façade → domain API services (`AreaApi`, `WorkerApi`, `PlantApi`, etc.) → backend HTTP
+- Auth interceptors (outer→inner): `apiErrorInterceptor` → `loggingInterceptor` → `authInterceptor`

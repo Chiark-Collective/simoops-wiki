@@ -20,6 +20,7 @@ Source of truth for tracked sources: [manifest.json](manifest.json)
 | 2026-05-02 | 4183b2f | Pass 3: Domain deep dives — all 7 batches (Entity, Clash, Planning, Import/Export, Reports, Maps/Geometry/Weather, Auth/Core) | 29 modules + 12 flows + shared files |
 | 2026-05-02 | cf53fca | Source repo pulled to cf53fca (permits.py changes, permit API tests) | Manifest head commit updated |
 | 2026-05-02 | TBD | Pass 4: Remaining backend modules — Batches H, I, J, K (Core Entities, Site & Org, Clash Depth, Core Infrastructure) | 22 modules + shared files |
+| 2026-05-02 | TBD | Phase 1 (frontend): Scaffold — 19 UI module stubs + 2 API channels + index + shared files | 24 pages + shared files |
 
 ## Next ingest targets
 

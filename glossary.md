@@ -48,6 +48,19 @@
 | Scene decision | A user's choice of which report scene (clash, delivery, etc.) to include. |
 | Provider registry | Ordered registry of context providers; registration order determines dependency resolution. |
 | COG | Cloud Optimized GeoTIFF; tiled raster format for efficient map serving. |
+| Zoneless change detection | Angular strategy using `provideZonelessChangeDetection()`; eliminates Zone.js for finer-grained updates. |
+| BehaviorSubject store | RxJS `BehaviorSubject` holding entity arrays with O(1) lookup index; used by `EntityStore`. |
+| Sync-binding service | Bridges WebSocket entity events into local reactive state; one per domain (contractor, shift, clash rule, etc.). |
+| Creation mode | UI state (`idle` | `DomainEntityKind` | `road` | `reference`) driving map click-to-create behavior. |
+| Revision mode | Historical snapshot mode; swaps live entity streams to audit-derived snapshots and drops live WS events. |
+| App view mode | `'live'` | `'plan'` | `'compare'` — drives which planning cycle data is displayed. |
+| MapLibre | Open-source map rendering library (fork of Mapbox GL); used for the SimOops map canvas. |
+| Plain class helper | Non-Angular TypeScript class owned by a component instance; deliberately not `@Injectable` to scope lifetime to the component. |
+| Orchestrator service | Angular service that coordinates multi-step user flows (creation, edit, delete, reports) across multiple domain services. |
+| Modal result dispatch | Pattern where modal outcomes are handled by dedicated services rather than inline callbacks. |
+| Ephemeral broadcast | Non-persisted, non-sequenced WebSocket message (drag positions, radius changes) for real-time visual feedback. |
+| Presence viewport | Bounding box broadcast every 5s to show other users' map viewports. |
+| Report scene | A bounded map region captured for inclusion in a report; includes minimap compositing and display options. |
 | Floor plan | A georeferenced image or GeoTIFF representing a building level. |
 | Feature | A geometadata object: point, line, or polygon with properties and versioning. |
 | Presence | WebSocket state tracking who is online, what they are editing, and their map viewport. |

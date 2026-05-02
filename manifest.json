@@ -337,6 +337,94 @@
     {
       "path": "services/backend/modules/storage.md",
       "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/index.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/api/http.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/api/websocket.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/app-shell.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/auth.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/dashboard.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/shared-ui.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/map-core.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/map-layers.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/map-interaction.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/map-visuals.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/map-floor-plans.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/entity-store.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/entity-creation.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/entity-edit.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/entity-delete.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/selection.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/temporal-planning.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/clash-ui.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/reports.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/site-admin.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/modules/realtime-sync.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
     }
   ]
 }
