@@ -128,6 +128,52 @@ If the Redis connection drops, the listener task exits and stays dead until `sta
 `storage.py::delete_file_no_error` swallows all `BotoCoreError` and `ClientError`.
 → Cleanup paths may leave orphaned objects without any signal.
 
+## Frontend
+
+### Zone.js + MapLibre symbol-layer corruption
+GeoJSON sources that start empty and are later populated via `setData` silently fail for symbol layers (`queryRenderedFeatures` returns zero results). Affected sources: delivery pins, inactive cranes, building badges, geometadata.
+→ Use `updateGeoJsonSourceWithRecreate` on the first empty→populated transition; afterwards re-apply visibility and selection state.
+
+### MapLibre handlers fire outside Angular zone
+`ngZone.runOutsideAngular` during map construction is required for 60fps performance, but all pointer/drag/hover handlers fire outside the zone. `markForCheck` races under worker contention; signals or explicit `detectChanges` are required in map-driven components.
+
+### AuthService test token read once at construction
+`window.__SIMOOPS_TEST_TOKEN__` is read in the `AuthService` constructor. Injecting it after bootstrap has no effect.
+→ Set the token before `bootstrapApplication` resolves.
+
+### UserService removes pending invite before API resolves
+`fetchCurrentUser` deletes `simoops_pending_invite_token` from `localStorage` before `acceptInviteLink` resolves. If the API fails, the token is lost and the user must re-enter the invite link.
+
+### Dashboard wiring subscriptions are app-scoped
+`DashboardBootstrapWiringService` and `DashboardInteractionWiringService` are `providedIn: 'root'` with `takeUntilDestroyed` bound to the app-scoped `DestroyRef`. If the dashboard component is ever recreated, subscriptions leak.
+
+### PanelStateService silently swallows parse failures
+`loadLayoutPrefs` returns `{}` on any `JSON.parse` error, causing a full fallback to `DEFAULT_UI_STATE`. Invalid individual fields are also silently dropped.
+
+### WebSocket catch-up dedup races with live events
+`pendingCatchUpSnapshot` is frozen at `sendCatchUp` time. If a live broadcast arrives after send but before the response with `seq > snapshot`, the snapshot threshold prevents silent dropping of legitimately missed events. See `websocket.service.ts::sendCatchUp` "C2 regression" comment.
+
+### Offline queue optimistic state may drift
+`executeMutation` calls `EntityService.addLocal/updateLocal/removeLocal` optimistically. If the API succeeds but the WS broadcast is delayed, local state may be temporarily out of sync with the server seq.
+
+### Map source recreation resets filters and layout properties
+`recreateGeoJsonSource` removes and re-adds the source and its layers. Dynamic `setLayoutProperty`, `setFilter`, and `setFeatureState` changes are lost. Callers must re-apply them after recreation.
+
+### SiteContextService getters return new Observable references
+`selectedShift$` and `selectedDate$` are getters returning `TemporalContextService` observables. Binding directly in templates creates a new reference each change-detection cycle; cache in a component property or use `siteContext.context$`.
+
+### Sync bindings must be injected eagerly
+`ContractorSyncBinding`, `ShiftSyncBinding`, `InviteSyncBinding`, and others must be injected before the first WS broadcast arrives. Lazy injection (e.g., behind `*ngIf`) misses early events.
+
+### EntityStore optimistic updates only for tokens and plants
+`updateArea` lacks optimistic-update and 409-rollback logic. Area edits are not protected from concurrent modification conflicts.
+
+### Revision mode bypasses plan-state filter
+If `RevisionModeService` is enabled and a snapshot is loaded, `_cachedVisible*` arrays contain the snapshot's full set. Mixing live plan-state logic with snapshot data causes empty-map regressions.
+
+### Clash state is a no-op in revision mode
+`ClashStateService.setClashes` silently skips while `revisionMode.enabled` is true. Live clash data must not overwrite historical snapshot clashes.
+
 ## General
 
 ### WebSocket presence vs database presence

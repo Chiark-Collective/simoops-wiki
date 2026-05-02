@@ -22,10 +22,18 @@ Source of truth for tracked sources: [manifest.json](manifest.json)
 | 2026-05-02 | TBD | Pass 4: Remaining backend modules — Batches H, I, J, K (Core Entities, Site & Org, Clash Depth, Core Infrastructure) | 22 modules + shared files |
 | 2026-05-02 | TBD | Phase 1 (frontend): Scaffold — 19 UI module stubs + 2 API channels + index + shared files | 24 pages + shared files |
 | 2026-05-02 | cf53fca | Cross-service mapping pass: HTTP, WebSocket, Auth contracts | 3 contract pages + index updates |
+| 2026-05-02 | cf53fca | Frontend Phase 2 Batch A: app-shell, auth, shared-ui, dashboard deep dives | 4 UI module pages |
+| 2026-05-02 | cf53fca | Frontend Phase 2 Batch B: entity-store, selection, realtime-sync deep dives | 3 UI module pages |
+| 2026-05-02 | cf53fca | Frontend Phase 2 Batch C: map-core, map-layers, map-interaction, map-visuals, map-floor-plans deep dives | 5 UI module pages |
+| 2026-05-02 | cf53fca | Frontend Phase 2 Batch D: entity-creation, entity-edit, entity-delete deep dives | 3 UI module pages |
+| 2026-05-02 | cf53fca | Frontend Phase 2 Batch E: temporal-planning, clash-ui, site-admin, reports deep dives | 4 UI module pages |
 
 ## Next ingest targets
 
-- Refresh stale pages with `last_verified_commit: TBD` once source changes
-- Frontend (Phase 3) when backend coverage is complete
+- Frontend Phase 2 complete — all 19 UI modules deep-dived
+- Consider adding frontend-specific flows (login-to-dashboard, entity-creation, etc.)
+- Frontend Phase 2 Batch C: map-core, map-layers, map-interaction, map-visuals, map-floor-plans
+- Frontend Phase 2 Batch D: entity-creation, entity-edit, entity-delete
+- Frontend Phase 2 Batch E: temporal-planning, clash-ui, site-admin, reports
 - `ops/` runbooks for production incidents
 - `analyses/` for architectural decisions and explorations
