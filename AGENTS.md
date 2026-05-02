@@ -279,7 +279,15 @@ Every link must be round-trippable:
 
 1. Start at entry points (API channel rows)
 2. Trace outward one cohesive unit at a time
-3. Update module + flow + api + glossary + gotchas + index + log
+3. Update every touched page and cross-cutting file:
+   - [ ] Module page(s) — new or modified
+   - [ ] Flow page(s) — if trigger/sequence changed
+   - [ ] API channel page(s) — if surface area changed
+   - [ ] Service `index.md` routing table
+   - [ ] `glossary.md` — new domain terms
+   - [ ] `gotchas.md` — new footguns or invariants
+   - [ ] `log.md` history table + next targets **(! lint.py does NOT catch missing log updates)**
+   - [ ] `manifest.json` — new pages, commit hashes
 4. Typical touch: 5–12 pages
 5. Record commit hash in `last_verified_commit` for every source touch
 
