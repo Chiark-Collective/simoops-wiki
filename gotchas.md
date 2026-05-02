@@ -20,6 +20,10 @@ Keycloak fails at 1 GB limit.
 
 ## Backend
 
+### Contractor tokens deprecated
+Contractor tokens (`sub` prefix `"contractor:"`) are rejected with 401 in all auth paths.
+→ Use Keycloak OIDC login only.
+
 ### Planning cycle state transitions
 Some transitions are irreversible (e.g., active → archived).
 → Validate before applying; no rollback path in current implementation.

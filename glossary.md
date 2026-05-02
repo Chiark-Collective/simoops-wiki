@@ -5,6 +5,9 @@
 
 | Term | Definition |
 |---|---|
+| Bearer token | JWT presented in the `Authorization: Bearer <token>` header |
+| JWKS | JSON Web Key Set; Keycloak publishes RS256 public keys via a JWKS endpoint |
+| keycloak_sub | Keycloak subject identifier stored on `User.keycloak_sub`; primary user lookup key |
 | Entity | A managed object in the planning cycle: token, zone, fence, section. Has geometry and state. |
 | Token | A point-geometry entity representing a person or asset on site. |
 | Zone | A polygon-geometry entity defining an area with safety rules. |

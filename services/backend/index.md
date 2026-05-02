@@ -15,6 +15,7 @@ last_verified_commit: TBD
 |---|---|
 | [api/http.md](api/http.md) | HTTP routes |
 | [api/websocket.md](api/websocket.md) | WebSocket events |
+| [modules/core_auth.md](modules/core_auth.md) | JWT authentication and user resolution |
 | [modules/clash_engine.md](modules/clash_engine.md) | Declarative clash detection |
 | [modules/planning_cycle.md](modules/planning_cycle.md) | Planning cycle lifecycle |
 | [modules/report_pipeline.md](modules/report_pipeline.md) | Report export orchestration |
