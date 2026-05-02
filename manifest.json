@@ -425,6 +425,18 @@
     {
       "path": "services/ui/modules/realtime-sync.md",
       "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "contracts/ui-backend/http-contract.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "contracts/ui-backend/websocket-contract.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "contracts/ui-backend/auth-contract.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
     }
   ]
 }

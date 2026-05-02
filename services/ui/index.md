@@ -70,6 +70,14 @@ Angular standalone application. Boots via `bootstrapApplication` with zoneless c
 |---|---|
 | [modules/realtime-sync.md](modules/realtime-sync.md) | WebSocket connection, event router, presence, offline queue, undo |
 
+## Contracts
+
+| Page | What |
+|---|---|
+| [contracts/ui-backend/http-contract.md](../../contracts/ui-backend/http-contract.md) | Frontend API methods → backend HTTP endpoints |
+| [contracts/ui-backend/websocket-contract.md](../../contracts/ui-backend/websocket-contract.md) | WebSocket actions, events, and lifecycle |
+| [contracts/ui-backend/auth-contract.md](../../contracts/ui-backend/auth-contract.md) | OIDC flow, token format, role mapping |
+
 ## Flows
 
 | Page | Trigger |

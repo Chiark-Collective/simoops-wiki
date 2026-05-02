@@ -21,6 +21,7 @@ Source of truth for tracked sources: [manifest.json](manifest.json)
 | 2026-05-02 | cf53fca | Source repo pulled to cf53fca (permits.py changes, permit API tests) | Manifest head commit updated |
 | 2026-05-02 | TBD | Pass 4: Remaining backend modules — Batches H, I, J, K (Core Entities, Site & Org, Clash Depth, Core Infrastructure) | 22 modules + shared files |
 | 2026-05-02 | TBD | Phase 1 (frontend): Scaffold — 19 UI module stubs + 2 API channels + index + shared files | 24 pages + shared files |
+| 2026-05-02 | cf53fca | Cross-service mapping pass: HTTP, WebSocket, Auth contracts | 3 contract pages + index updates |
 
 ## Next ingest targets
 
