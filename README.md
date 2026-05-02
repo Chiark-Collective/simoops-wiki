@@ -111,7 +111,7 @@ python3 scripts/refresh.py
 python3 scripts/lint.py
 ```
 
-Refresh is planning-only — it reports, it does not auto-update. Lint is the gate. Both run on every commit.
+Refresh is planning-only — it reports, it does not auto-update. Lint is the gate. Run both before committing.
 
 ## Source
 
