@@ -16,6 +16,10 @@ last_verified_commit: TBD
 | [api/http.md](api/http.md) | HTTP routes |
 | [api/websocket.md](api/websocket.md) | WebSocket events |
 | [modules/core_auth.md](modules/core_auth.md) | JWT authentication and user resolution |
+| [modules/core_rbac.md](modules/core_rbac.md) | Site-scoped permissions and role hierarchy |
+| [modules/websocket_runtime.md](modules/websocket_runtime.md) | WebSocket connections, rooms, and presence |
+| [modules/redis_core.md](modules/redis_core.md) | Redis pub/sub relay and event log |
+| [modules/data_lock.md](modules/data_lock.md) | Site-level data immutability boundary |
 | [modules/clash_engine.md](modules/clash_engine.md) | Declarative clash detection |
 | [modules/planning_cycle.md](modules/planning_cycle.md) | Planning cycle lifecycle |
 | [modules/report_pipeline.md](modules/report_pipeline.md) | Report export orchestration |

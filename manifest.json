@@ -35,6 +35,22 @@
       "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
     },
     {
+      "path": "services/backend/modules/core_rbac.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/websocket_runtime.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/redis_core.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/data_lock.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
       "path": "services/backend/api/http.md",
       "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
     },
