@@ -485,6 +485,30 @@
     {
       "path": "services/ui/flows/site-settings-management.md",
       "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "flows/entity-creation-end-to-end.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "flows/entity-update-end-to-end.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "flows/planning-cycle-end-to-end.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "flows/clash-detect-end-to-end.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "flows/vertex-op-end-to-end.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "flows/report-export-end-to-end.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
     }
   ]
 }

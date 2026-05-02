@@ -28,10 +28,10 @@ Source of truth for tracked sources: [manifest.json](manifest.json)
 | 2026-05-02 | cf53fca | Frontend Phase 2 Batch D: entity-creation, entity-edit, entity-delete deep dives | 3 UI module pages |
 | 2026-05-02 | cf53fca | Frontend Phase 2 Batch E: temporal-planning, clash-ui, site-admin, reports deep dives | 4 UI module pages |
 | 2026-05-02 | cf53fca | Frontend flows: 12 user journey flows documented via parallel subagents | 12 flow pages + index updates |
+| 2026-05-02 | cf53fca | Cross-service end-to-end flows: 6 flows bridging frontend and backend | 6 cross-service flow pages + index updates |
 
 ## Next ingest targets
 
-- Frontend flows complete — 12 user journeys documented
-- Cross-service end-to-end flows (combine frontend + backend pairs)
+- Cross-service end-to-end flows complete — 6 flows bridging frontend and backend
 - `ops/` runbooks for production incidents
 - `analyses/` for architectural decisions and explorations
