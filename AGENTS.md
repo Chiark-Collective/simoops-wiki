@@ -53,7 +53,7 @@ wiki/
 
 A cohesive unit of code: a package, a subsystem, a library, a component tree.
 
-```yaml
+```md
 ---
 service: <name>
 summary: <≤15 words>
@@ -98,7 +98,7 @@ Bulleted. Link to shared gotchas.md when applicable.
 
 A trigger causes a sequence of steps with side effects.
 
-```yaml
+```md
 ---
 trigger: { channel: <type>, ref: "<identifier>" }
 services: [<names>]
@@ -123,7 +123,7 @@ Bulleted: what breaks, how it's detected, how it's handled.
 
 The surface area of a service.
 
-```yaml
+```md
 ---
 service: <name>
 channel: <type>  # http, grpc, kafka, graphql, websocket, function, cli, etc.
@@ -136,7 +136,7 @@ channel: <type>  # http, grpc, kafka, graphql, websocket, function, cli, etc.
 
 An inter-service data contract.
 
-```yaml
+```md
 ---
 producer: <service>
 consumers: [<services>]
@@ -158,7 +158,7 @@ Embed or cite.
 
 A third-party dependency.
 
-```yaml
+```md
 ---
 direction: in | out | both
 consumed_by: [<services>]
@@ -182,7 +182,7 @@ Bulleted.
 
 A runtime infrastructure resource.
 
-```yaml
+```md
 ---
 used_by: [<services>]
 owner_team: <name>
@@ -202,7 +202,7 @@ Bulleted.
 
 An ops procedure keyed on a symptom.
 
-```yaml
+```md
 ---
 symptom: "exact symptom string"
 related_flows: [<names>]
@@ -227,7 +227,7 @@ Bulleted, links to analyses/.
 
 An exploratory or investigatory page filed from a query.
 
-```yaml
+```md
 ---
 status: open | stale | merged | superseded
 ---
