@@ -22,6 +22,7 @@ paths:
   - src/app/api/entity-support.api.ts
   - src/app/types/entity.types.ts
   - src/app/types/entity-kind.ts
+  - src/app/services/data-load.service.ts
 flows: []
 touches: []
 external: []
@@ -55,3 +56,4 @@ Centralised state and API layer for spatial entities. `EntityStore` provides a p
 - `types/entity.types.ts::Area` — Area entity with polygon, feature type, clashable flag, and temporal bounds.
 - `types/entity.types.ts::DomainEntity` — Union of `Worker | Plant | Area`.
 - `types/entity-kind.ts::DomainEntityKind` — Discriminator literal `'worker' | 'plant' | 'area'`.
+- `services/data-load.service.ts::DataLoadService` — Centralised orchestrator for all entity reloads: tokens, plants, areas, roads, deliveries, POIs, alerts, text labels, geometadata, sun times, and planning cycle data.

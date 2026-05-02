@@ -12,6 +12,7 @@ paths:
   - utils/logger.ts
   - utils/date-format.ts
   - constants/index.ts
+  - components/index.ts
 flows: []
 touches: []
 external: []
@@ -32,3 +33,4 @@ Provides cross-cutting UI primitives, formatting pipes, error handling utilities
 - `utils/logger.ts::createLogger` — Factory returning a `Logger` with `debug/info/warn/error` methods that prefix messages with a tag and route through `console.*` for capture by `ConsoleLogService`.
 - `utils/date-format.ts::toLocalDateStr` — Local-timezone-safe `YYYY-MM-DD` formatter avoiding `toISOString` UTC shifts. Also exports `getRelativeTime`, `datesInRange`, and weekday constants.
 - `constants/index.ts` — Barrel re-exporting `time.ts` and `geometry.ts`. Key exports include `MINUTES_PER_DAY`, `EARTH_RADIUS_M`, `DEG_TO_RAD`, `LAT_LON_METERS_PER_DEGREE`.
+- `components/index.ts` — Barrel re-exporting ~70 modal, list, banner, and selection components (entity creation/edit modals, conflict banners, revision picker, rule editor, etc.).

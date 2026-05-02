@@ -11,6 +11,7 @@ paths:
   - src/app/map/map-layer-visibility.ts
   - src/app/map/map-raster-source.ts
   - src/app/map/map-layers.ts
+  - src/app/services/geometadata.service.ts
 flows: []
 touches: []
 external: []
@@ -48,3 +49,4 @@ Defines every MapLibre layer, source, and render-order rule for the SimOops map,
 
 ### Barrel
 - `app/map/map-layers.ts` — Re-exports layer definitions, patterns, and SVG icon helpers.
+- `services/geometadata.service.ts::GeometadataService` — Layer and feature state management, visibility toggles, layer upload/update/delete, and temporal feature loading.

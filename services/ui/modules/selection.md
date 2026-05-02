@@ -12,6 +12,7 @@ paths:
   - src/app/services/area-feature-interaction.service.ts
   - src/app/services/area-feature-types.ts
   - src/app/services/visibility-settings.service.ts
+  - src/app/services/entity-interaction-orchestrator.service.ts
 flows: []
 touches: []
 external: []
@@ -32,3 +33,4 @@ Unified selection and visibility subsystem. `SelectionService` manages typed sin
 - `services/area-feature-interaction.service.ts::AreaFeatureInteractionService` — Area selection, vertex edit coordination, hole cutting, undo cuts, feature type changes, layer deletion, and building edit routing.
 - `services/area-feature-types.ts::ACTIVE_AREA_FEATURE_TYPES` — Canonical set of active area feature types (`exclusion`, `laydown`, `work_area`).
 - `services/visibility-settings.service.ts::VisibilitySettingsService` — Opacity, color, and misc display settings with localStorage persistence.
+- `services/entity-interaction-orchestrator.service.ts::EntityInteractionOrchestrator` — Routes entity clicks on the map to selection, building/floor coordination, and panel state updates.
