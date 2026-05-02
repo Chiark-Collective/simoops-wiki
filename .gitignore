@@ -1,0 +1,32 @@
+# IntelliJ / JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# General
+*.log
+*.swp
+*.swo
+*~
+.env
+.env.local
+
+# Wiki-specific (do not track generated artifacts)
+scripts/__pycache__/

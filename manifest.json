@@ -1,0 +1,102 @@
+{
+  "source_repo": "/Users/williamcheung/Development/simoops",
+  "source_head_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b",
+  "tracked_pages": [
+    {
+      "path": "AGENTS.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "index.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "topology.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "log.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "glossary.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "gotchas.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/index.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/api/http.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/api/websocket.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/clash_engine.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/planning_cycle.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/report_pipeline.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/entity_creation.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/clash_detect_and_resolve.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "infra/data-stores.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "infra/network.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "external/keycloak/index.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "external/postgis/index.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "external/index.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "infra/index.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "flows/index.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "contracts/index.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "ops/index.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "build.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    }
+  ]
+}
