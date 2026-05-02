@@ -312,6 +312,26 @@ Enforced by `scripts/lint.py`:
 
 ---
 
+## Subagent Orchestration
+
+When delegating multi-step ingest or exploration tasks to parallel subagents:
+
+### Progress Monitoring
+
+1. **Heartbeat files** — Each subagent writes a progress file (e.g. `/tmp/flow-<name>.progress`) every 60 seconds containing a timestamp and current step.
+2. **Orchestrator polling** — The orchestrator checks all heartbeat files every 90 seconds.
+3. **Intervention threshold** — If a heartbeat file has not been updated in 120 seconds:
+   - Read any partial output the subagent wrote to its assigned scratch directory.
+   - If meaningful progress exists (>50% complete, or key sections drafted), send a lightweight "ping" task (30s timeout) to verify responsiveness.
+   - If the ping fails or no meaningful progress exists, treat the subagent as stuck.
+4. **Re-delegation** — Kill the stuck task and spawn a fresh subagent:
+   - Pass along all partial markdown already produced.
+   - Narrow the scope to the remaining work (e.g. skip already-completed Trigger/Steps sections; focus on Failure modes).
+   - If zero progress was made, restart with a simpler decomposition (e.g. trace only HTTP call sequence, defer WebSocket dedup logic).
+5. **Timeout guard** — Assign a hard timeout per flow (e.g. 8 minutes). If exceeded, the task errors automatically and the orchestrator applies the re-delegation rules above.
+
+---
+
 ## Frontend Mapping (for multi-tier systems)
 
 When this wiki covers a frontend tier, apply the same page types without forking the schema:

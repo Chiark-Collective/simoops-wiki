@@ -437,6 +437,54 @@
     {
       "path": "contracts/ui-backend/auth-contract.md",
       "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/login-to-dashboard.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/entity-creation-on-map.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/entity-edit-session.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/entity-delete-with-undo.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/map-entity-drag.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/websocket-reconnection-catchup.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/planning-cycle-submission.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/revision-mode-navigation.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/report-generation-export.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/clash-detection-workflow.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/polygon-vertex-edit.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/ui/flows/site-settings-management.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
     }
   ]
 }

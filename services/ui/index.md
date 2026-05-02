@@ -82,8 +82,15 @@ Angular standalone application. Boots via `bootstrapApplication` with zoneless c
 
 | Page | Trigger |
 |---|---|
-| (pending) | Login → Site Select → Dashboard bootstrap |
-| (pending) | Create entity on map |
-| (pending) | Submit planning cycle |
-| (pending) | Report generation and export |
-| (pending) | WebSocket reconnection with catch-up |
+| [flows/login-to-dashboard.md](flows/login-to-dashboard.md) | `/login` → OIDC → site selection → dashboard bootstrap |
+| [flows/entity-creation-on-map.md](flows/entity-creation-on-map.md) | FAB add action → map click → form → API → WS → map refresh |
+| [flows/entity-edit-session.md](flows/entity-edit-session.md) | Select entity → edit modal → live WS merge → save |
+| [flows/entity-delete-with-undo.md](flows/entity-delete-with-undo.md) | Delete key/button → confirmation → API → undo record |
+| [flows/map-entity-drag.md](flows/map-entity-drag.md) | Map mouse down on entity → threshold → drag → commit |
+| [flows/websocket-reconnection-catchup.md](flows/websocket-reconnection-catchup.md) | WS connection drop → reconnect → catch-up → offline queue flush |
+| [flows/planning-cycle-submission.md](flows/planning-cycle-submission.md) | Planning panel create/submit/approve/actualize/archive |
+| [flows/revision-mode-navigation.md](flows/revision-mode-navigation.md) | Enter revision mode → snapshot fetch → timeline/compare |
+| [flows/report-generation-export.md](flows/report-generation-export.md) | Report panel → scene selection → autosave → capture → export |
+| [flows/clash-detection-workflow.md](flows/clash-detection-workflow.md) | Clash panel open → filter → select → resolve/unresolve |
+| [flows/polygon-vertex-edit.md](flows/polygon-vertex-edit.md) | Edit shape → vertex select/drag/insert/delete → save |
+| [flows/site-settings-management.md](flows/site-settings-management.md) | Site settings modal → shift/contractor/invite/smart-group CRUD |

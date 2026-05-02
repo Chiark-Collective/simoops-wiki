@@ -27,13 +27,11 @@ Source of truth for tracked sources: [manifest.json](manifest.json)
 | 2026-05-02 | cf53fca | Frontend Phase 2 Batch C: map-core, map-layers, map-interaction, map-visuals, map-floor-plans deep dives | 5 UI module pages |
 | 2026-05-02 | cf53fca | Frontend Phase 2 Batch D: entity-creation, entity-edit, entity-delete deep dives | 3 UI module pages |
 | 2026-05-02 | cf53fca | Frontend Phase 2 Batch E: temporal-planning, clash-ui, site-admin, reports deep dives | 4 UI module pages |
+| 2026-05-02 | cf53fca | Frontend flows: 12 user journey flows documented via parallel subagents | 12 flow pages + index updates |
 
 ## Next ingest targets
 
-- Frontend Phase 2 complete — all 19 UI modules deep-dived
-- Consider adding frontend-specific flows (login-to-dashboard, entity-creation, etc.)
-- Frontend Phase 2 Batch C: map-core, map-layers, map-interaction, map-visuals, map-floor-plans
-- Frontend Phase 2 Batch D: entity-creation, entity-edit, entity-delete
-- Frontend Phase 2 Batch E: temporal-planning, clash-ui, site-admin, reports
+- Frontend flows complete — 12 user journeys documented
+- Cross-service end-to-end flows (combine frontend + backend pairs)
 - `ops/` runbooks for production incidents
 - `analyses/` for architectural decisions and explorations
