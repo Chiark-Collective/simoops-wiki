@@ -17,10 +17,8 @@
 | Clash | A spatial or temporal violation between entities and safety rules. |
 | Planning Cycle | The lifecycle of a site's plan: draft → active → archived. |
 | OT | Operational Transformation; concurrency control for collaborative geometry edits. |
-| Presence | Real-time user location and viewport sharing. |
 | Room | A named broadcast channel, conventionally `site:{site_id}`. |
 | SubscriptionContext | Pre-fetched permission data (`role`, `contractor_id`, `can_view_others`) passed to `subscribe()`. |
-| Ephemeral broadcast | A non-persisted, non-sequenced, non-relayed WebSocket message (e.g., drag positions). |
 | Entity event | A sequenced lifecycle broadcast (`entity_created`, `entity_updated`, `entity_deleted`). |
 | Audience directive | Per-event privacy metadata (`owner_or_shared`, `non_owner`) restricting delivery. |
 | Context invalidation | Broadcast of `context_invalidated` to force clients to re-subscribe and refresh cached permissions. |

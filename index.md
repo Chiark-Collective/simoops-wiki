@@ -16,7 +16,7 @@ See [topology.md](topology.md) for runtime boundaries and data flow.
 | Service | Role | Entry |
 |---|---|---|
 | [backend](services/backend/index.md) | API, planning cycle, clash detection, reports | HTTP, WebSocket |
-| ui | Angular SPA, map, dashboard | HTTP (static) |
+| [ui](services/ui/index.md) | Angular SPA, map, dashboard | HTTP (static) |
 
 ## Cross-service
 
