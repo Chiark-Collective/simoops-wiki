@@ -60,21 +60,6 @@ wiki/
 | **Infra** | What are the runtime resources? | `data-stores.md` |
 | **Runbook** | What do I do when I see this symptom? | (ops procedures) |
 
-## Current coverage
-
-**Backend (complete)**: 29 modules, 12 flows, 2 API channels, 5 core modules, 3 external systems.
-
-Key domains documented:
-- **Entity Management** — CRUD, broadcast/audit, scheduling, vertex operations
-- **Clash Detection** — Rule engine, proximity detection, 3D spatial/temporal evaluation
-- **Planning Cycle** — Native/shadow rows, compare, carry-forward, submission
-- **Reports** — Template-driven pipeline with 6 ordered context providers
-- **Import/Export** — Bulk CSV, permit XLSX, bundle imports, GeoJSON export
-- **Maps & Geometry** — GeoJSON/SHP features, polygon cutting, COG tiles
-- **Auth & Core** — Keycloak integration, presence, event log, data locks
-
-**Frontend**: Not yet ingested (Phase 3).
-
 ## For agents
 
 1. Start at [`index.md`](index.md) for orientation.
