@@ -53,3 +53,11 @@
 | Presence | WebSocket state tracking who is online, what they are editing, and their map viewport. |
 | Heartbeat | Periodic `presence_heartbeat` message refreshing presence TTL in Redis. |
 | Invite link | A shareable tokenized URL granting site access without email. |
+| Text label | Site-wide permanent text annotation on the map; no temporal model, no clash participation. |
+| Audit snapshot | A serialized entity state captured at mutation time; used for reverts and timeline reconstruction. |
+| Rule profile | A named collection of activated clash rules with custom parameters; can be cloned and templated. |
+| Rule version | A point-in-time snapshot of a single clash rule; supports rollback and audit. |
+| Scene score | An aggregated severity metric for a set of clashes within a planning scene. |
+| Clash cache generation | Monotonic counter per site/shift; cache keys include generation to detect invalidation. |
+| JWKS cache | In-memory cache of Keycloak public keys; stale on prolonged outage. |
+| Presigned URL | Time-limited S3 URL for direct client upload/download without proxying through the backend. |

@@ -1,6 +1,6 @@
 {
   "source_repo": "/Users/williamcheung/Development/simoops",
-  "source_head_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b",
+  "source_head_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b",
   "tracked_pages": [
     {
       "path": "AGENTS.md",
@@ -249,6 +249,94 @@
     {
       "path": "build.md",
       "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/plant_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/worker_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/alert_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/delivery_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/poi_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/text_label_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/audit_revert_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/site_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/contractor_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/shift_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/membership_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/smart_group_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/clash_at_time_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/clash_cache.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/clash_resolution_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/clash_scene_scoring.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/rule_profile_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/rule_version_service.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/config.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/jwks.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/permissions.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+    },
+    {
+      "path": "services/backend/modules/storage.md",
+      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
     }
   ]
 }

@@ -29,6 +29,10 @@ last_verified_commit: TBD
 | [modules/data_lock.md](modules/data_lock.md) | Site-level data immutability boundary |
 | [modules/event_log.md](modules/event_log.md) | Redis-backed sequenced event log |
 | [modules/presence_manager.md](modules/presence_manager.md) | WebSocket presence state machine |
+| [modules/config.md](modules/config.md) | Pydantic settings from `SIMOOPS_*` env vars |
+| [modules/jwks.md](modules/jwks.md) | Keycloak JWKS client for RS256 validation |
+| [modules/permissions.md](modules/permissions.md) | Permission enum and role-to-permission mapping |
+| [modules/storage.md](modules/storage.md) | S3-compatible object storage abstraction |
 
 ### Entity Management
 
@@ -38,6 +42,23 @@ last_verified_commit: TBD
 | [modules/entity_broadcast_audit.md](modules/entity_broadcast_audit.md) | Broadcast, audit, revert, timeline |
 | [modules/entity_schedule.md](modules/entity_schedule.md) | Temporal scheduling and shift resolution |
 | [modules/vertex_op.md](modules/vertex_op.md) | OT polygon vertex editing |
+| [modules/plant_service.md](modules/plant_service.md) | Plant CRUD, geometry, scheduling, clash colors |
+| [modules/worker_service.md](modules/worker_service.md) | Worker CRUD, position, radius, schedule, copy |
+| [modules/alert_service.md](modules/alert_service.md) | Alert CRUD, activity tracking, resolution |
+| [modules/delivery_service.md](modules/delivery_service.md) | Delivery CRUD, contractor assignment, windows |
+| [modules/poi_service.md](modules/poi_service.md) | Point-of-interest map markers |
+| [modules/text_label_service.md](modules/text_label_service.md) | Text annotation CRUD for maps |
+| [modules/audit_revert_service.md](modules/audit_revert_service.md) | Revert entities to previous audit snapshots |
+
+### Site & Organization
+
+| Page | What |
+|---|---|
+| [modules/site_service.md](modules/site_service.md) | Site CRUD, cascade delete, default-shift seeding |
+| [modules/contractor_service.md](modules/contractor_service.md) | Contractor CRUD with dependency checks |
+| [modules/shift_service.md](modules/shift_service.md) | Shift definition CRUD |
+| [modules/membership_service.md](modules/membership_service.md) | SiteMembership approval / rejection |
+| [modules/smart_group_service.md](modules/smart_group_service.md) | Query definitions, per-event audience routing |
 
 ### Clash Detection
 
@@ -47,6 +68,12 @@ last_verified_commit: TBD
 | [modules/clash_detection.md](modules/clash_detection.md) | Runtime detection, resolution, caching |
 | [modules/clash_rules.md](modules/clash_rules.md) | Rule CRUD, versions, profiles, DSL |
 | [modules/clash_proximity.md](modules/clash_proximity.md) | Proximity engine and spatial predicates |
+| [modules/clash_at_time_service.md](modules/clash_at_time_service.md) | Historical clash detection at wall-clock instant |
+| [modules/clash_cache.md](modules/clash_cache.md) | Redis/in-memory caching for clash results |
+| [modules/clash_resolution_service.md](modules/clash_resolution_service.md) | Resolution workflow with comments |
+| [modules/clash_scene_scoring.md](modules/clash_scene_scoring.md) | Scene-level scoring, ranking, severity aggregation |
+| [modules/rule_profile_service.md](modules/rule_profile_service.md) | Profile CRUD, activation, cloning, templates |
+| [modules/rule_version_service.md](modules/rule_version_service.md) | Rule versioning and rollback |
 
 ### Planning Cycle
 

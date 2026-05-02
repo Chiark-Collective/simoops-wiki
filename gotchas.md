@@ -100,6 +100,34 @@ If the Redis connection drops, the listener task exits and stays dead until `sta
 `presence_manager.py` drops users whose heartbeat expires.
 → Clients that stop sending `presence_heartbeat` will disappear from the presence list even if the WebSocket is still connected.
 
+### Pre-migration audit entries cannot be reverted
+`AuditRevertService` raises HTTP 400 when the target `AuditLog.snapshot` is `None`.
+→ Any audit row written before the snapshot column was backfilled is non-revertible.
+
+### Audit-revert geometry SRID fallback
+`_deserialize_field_value` defaults to `srid=3857` when the SQLAlchemy `Geometry` column has no explicit srid.
+→ If a layer stores geometries in a different projection, reverts silently inject the wrong SRID.
+
+### Text label delete bypasses broadcast helper
+`text_label_service.py::delete_text_label` calls `ws_manager.broadcast_entity_event` directly instead of `_broadcast_event`.
+→ If broadcast payload formatting changes, deletion may drift from create/update.
+
+### JWKS stale cache on prolonged outage
+`jwks.py::get_jwks` serves stale cache when the Keycloak endpoint is unreachable.
+→ Key rotation during an outage causes token validation failures until the endpoint recovers.
+
+### JWKS relaxed issuer boundary
+`decode_keycloak_token` disables issuer verification (`verify_iss: False`).
+→ Tokens from any realm sharing the same Keycloak instance could pass signature validation; only the audience check remains.
+
+### Storage health transient false negatives
+`storage.py::check_health` returns `False` on `OSError`.
+→ DNS blips or temporary network issues appear as permanent unhealthiness in readiness probes.
+
+### Storage silent delete failures
+`storage.py::delete_file_no_error` swallows all `BotoCoreError` and `ClientError`.
+→ Cleanup paths may leave orphaned objects without any signal.
+
 ## General
 
 ### WebSocket presence vs database presence
