@@ -68,6 +68,38 @@ If the Redis connection drops, the listener task exits and stays dead until `sta
 `data_lock.py` normalises both datetimes to naive UTC before comparison.
 → If inputs are tz-aware but in different zones, ordering may be wrong for the same UTC instant.
 
+### Entity broadcast used by planning for clash invalidation
+`entity_broadcast.py::invalidate_clash_cache` is imported by planning services (`actualize_service.py`, `submission_service.py`, `submission_snapshot_service.py`).
+→ Tight coupling between entity broadcast and planning; modifying broadcast internals may break planning.
+
+### Schedule reconcile drops orphaned occurrences
+`schedule_reconcile.py` removes occurrences that no longer match any shift window.
+→ Clients may see entities disappear from shifts without an explicit delete event.
+
+### Vertex op buffer overflow
+`vertex_op_buffer.py` has a fixed-size ring buffer for pending ops.
+→ High-frequency edits from multiple users may evict ops before they are persisted.
+
+### Clash cache generation mismatch
+`clash_cache.py` keys results by `(site_id, shift_id, generation)`. If generation is incremented but cache is not cleared, stale results are served.
+→ Always invalidate cache when incrementing generation.
+
+### Planning baseline re-import is not always idempotent
+`import_baseline_service.py` shadows baseline rows. Re-running on a cycle with native modifications may create duplicates or lose edits.
+→ Re-import is safe only on fresh cycles.
+
+### Report provider order is hard-coded
+`providers/registry.py` registers providers in a fixed order. Later providers depend on keys set by earlier ones.
+→ Adding a new provider requires understanding the dependency chain and inserting at the correct position.
+
+### Weather cache short TTL
+`weather/cache.py` caches Open-Meteo responses with a short TTL (typically minutes).
+→ Repeated report exports within the same hour re-fetch weather.
+
+### Presence heartbeat required
+`presence_manager.py` drops users whose heartbeat expires.
+→ Clients that stop sending `presence_heartbeat` will disappear from the presence list even if the WebSocket is still connected.
+
 ## General
 
 ### WebSocket presence vs database presence

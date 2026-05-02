@@ -33,3 +33,23 @@
 | Synthetic membership | In-memory `SiteMembership` created for superadmins lacking an explicit site record. |
 | Contractor filter | `UUID | None` value used to scope entity queries; `None` means no contractor restriction. |
 | Site | The top-level organizational unit; contains entities, shifts, users. |
+| Schedule group | A collection of entities sharing a temporal pattern; resolved into occurrences per shift. |
+| Occurrence | A concrete time-bound instance of a schedule group within a specific shift. |
+| Reconcile | The process of aligning planned entity schedules with actual shift boundaries. |
+| Vertex op | A WebSocket message encoding an operational-transform edit to polygon vertices. |
+| OT buffer | In-memory ring buffer holding pending vertex ops before persistence. |
+| Clash cache | Generation-keyed Redis cache storing computed clash results per site/shift. |
+| Generation-based caching | Cache invalidation strategy using monotonic generation counters rather than timestamps. |
+| Native row | A planning cycle row created directly in the cycle (`source_row_id` IS NULL). |
+| Shadow row | A planning cycle row imported from baseline (`source_row_id` points to baseline). |
+| Actualize | The operation that forks planned rows into actual baseline rows. |
+| Carry-forward | Copying approved planned rows from a closed cycle into the next cycle. |
+| Template schema | YAML/JSON structure defining report sections and their data providers. |
+| Scene decision | A user's choice of which report scene (clash, delivery, etc.) to include. |
+| Provider registry | Ordered registry of context providers; registration order determines dependency resolution. |
+| COG | Cloud Optimized GeoTIFF; tiled raster format for efficient map serving. |
+| Floor plan | A georeferenced image or GeoTIFF representing a building level. |
+| Feature | A geometadata object: point, line, or polygon with properties and versioning. |
+| Presence | WebSocket state tracking who is online, what they are editing, and their map viewport. |
+| Heartbeat | Periodic `presence_heartbeat` message refreshing presence TTL in Redis. |
+| Invite link | A shareable tokenized URL granting site access without email. |

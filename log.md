@@ -17,9 +17,11 @@ Source of truth for tracked sources: [manifest.json](manifest.json)
 | 2026-05-02 | 857e514 | Pass 1: core_auth | services/backend/modules/core_auth.md, services/backend/index.md, glossary.md, gotchas.md, manifest.json |
 | 2026-05-02 | d4224c0 | Pass 1: core_rbac, websocket, redis, data_lock | services/backend/modules/core_rbac.md, services/backend/modules/websocket_runtime.md, services/backend/modules/redis_core.md, services/backend/modules/data_lock.md, services/backend/index.md, glossary.md, gotchas.md, manifest.json |
 | 2026-05-02 | 0cf57fb | Pass 2: API inventory (http, websocket) | services/backend/api/http.md, services/backend/api/websocket.md, log.md, manifest.json |
+| 2026-05-02 | TBD | Pass 3: Domain deep dives — all 7 batches (Entity, Clash, Planning, Import/Export, Reports, Maps/Geometry/Weather, Auth/Core) | 29 modules + 12 flows + shared files |
 
 ## Next ingest targets
 
-- `services/backend/modules/clash_engine.md` — refresh with cross-references to core modules
-- `services/backend/modules/planning_cycle.md` — refresh with cross-references to core modules
-- `services/backend/flows/entity_creation.md` — trace through auth → rbac → websocket → redis
+- Refresh stale pages with `last_verified_commit: TBD` once source changes
+- Frontend (Phase 3) when backend coverage is complete
+- `ops/` runbooks for production incidents
+- `analyses/` for architectural decisions and explorations

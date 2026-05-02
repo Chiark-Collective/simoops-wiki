@@ -9,27 +9,45 @@ external: []
 
 ## Trigger
 
-WebSocket `entity_created` or `entity_updated` event, or HTTP POST to `/api/clash-rules/{id}/evaluate`.
+WebSocket `entity_created` or `entity_updated` event, or HTTP POST to
+`/api/clash-rules/{id}/evaluate`. Both paths are gated by RBAC.
 
 ## Steps
 
-1. `ClashDetectionService` receives trigger (async task or sync call)
-2. Loads active rules for site from `ClashRuleService`
-3. `RuleCompiler(site)` compiles DB rules into `CompiledRule` runtime objects
-4. Loads relevant entities for current shift + time slice
-5. `DeclarativeClashEngine(compiled_rules)` evaluates entity set
-6. R-tree broad-phase filters to overlapping AABB pairs
-7. Narrow-phase predicates evaluated per pair
-8. `ClashCache` stores results keyed by `(site_id, shift_id, timestamp)`
-9. `ClashResolutionService` compares new results against cached prior state
-10. Deltas (new / resolved / updated) emitted via WebSocket `clash_updated`
+1. HTTP route handler or WebSocket event handler receives trigger
+2. For WebSocket mutations: calls `clash_cache.schedule_recomputation(site_id)`
+3. `schedule_recomputation` increments per-site generation, cancels existing
+   debounce timer, and starts a new `_debounced_recompute` task
+4. After `DEFAULT_RECOMPUTATION_DELAY` (0.5 s), `_debounced_recompute` opens
+   a fresh `async_session_factory()` session
+5. Calls `clash_cache.get_or_compute(session, site_id)` — full site, no
+   temporal range filter
+6. `get_or_compute` checks cache generation inside `asyncio.Lock`; on miss or
+   stale generation calls `_load_clash_inputs`
+7. `_load_clash_inputs` loads site, active profile, enabled rules, tokens,
+   plants, clashable features, inactive cranes, and building features; expunges
+   all ORM objects from the session
+8. Runs `_compute_clashes_sync` in a thread pool via `asyncio.to_thread`
+9. `_compute_clashes_sync` wraps entities with adapters, compiles rules,
+   evaluates via `DeclarativeClashEngine`, formats results with
+   `ClashResultFormatter`, and applies same-contractor exemptions
+10. Back in `get_or_compute`: loads resolutions, annotates clashes with
+    `resolved` flags, filters unresolved for severity derivation
+11. `derive_entity_severity` computes per-entity worst-case severity from
+    unresolved `ClashRuleResult`s
+12. Stores `ClashCacheEntry` (legacy + canonical shapes) in the LRU cache
+13. `_debounced_recompute` broadcasts `clash_results_updated` to WebSocket
+    room `site:{site_id}` via `ws_manager`
+14. HTTP POST path bypasses cache: calls `generate_clash_list` directly,
+    which follows steps 7–9 and returns legacy clashes immediately
 
 ## Side effects
 
-- PostGIS INSERT/UPDATE into `clashes` table
-- Redis cache write (`ClashCache`)
-- WebSocket broadcast to `site:{site_id}` room
+- PostGIS reads (rules, entities, features, resolutions)
+- In-memory cache write (`ClashCache._cache`)
+- WebSocket broadcast to `site:{site_id}` room (via `websocket_runtime` → `redis_core` relay)
 - Audit log entry for manual rule evaluations
+- `clash_resolution` table INSERT/UPDATE when resolving/unresolving clashes
 
 ## Failure modes
 
@@ -37,5 +55,7 @@ WebSocket `entity_created` or `entity_updated` event, or HTTP POST to `/api/clas
 |---|---|---|
 | Rule compilation error | Exception in `RuleCompiler` | Logged; rule skipped; evaluation continues |
 | Empty entity set | No entities in shift | Returns `[]`; no broadcast |
-| Cache stale | Timestamp mismatch | Recompute from scratch |
-| Engine timeout | CPU-bound on large site | Task cancelled; clashes remain stale |
+| Cache stale | Generation mismatch on read | Recompute from scratch |
+| Debounce timer cancelled | New mutation within 0.5 s | Timer resets; only last mutation triggers compute |
+| Recompute failure | Exception in `_debounced_recompute` | Logged; pending task reference cleaned up; clashes remain stale |
+| Resolution not found | `unresolve_clash` miss | Returns `UnresolveResult(deleted=False)` |

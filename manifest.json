@@ -51,6 +51,14 @@
       "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
     },
     {
+      "path": "services/backend/modules/event_log.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/presence_manager.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
       "path": "services/backend/api/http.md",
       "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
     },
@@ -63,7 +71,27 @@
       "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
     },
     {
+      "path": "services/backend/modules/clash_detection.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/clash_rules.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/clash_proximity.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
       "path": "services/backend/modules/planning_cycle.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/planning_compare.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/planning_submission.md",
       "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
     },
     {
@@ -71,11 +99,115 @@
       "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
     },
     {
+      "path": "services/backend/modules/report_providers.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/report_session.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/report_rendering.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/entity_service.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/entity_broadcast_audit.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/entity_schedule.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/vertex_op.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/bulk_import.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/permit_import.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/bundle_import.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/export_service.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/geometadata.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/geometry_cutting.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/site_maps.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/weather_service.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/modules/auth_invites.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
       "path": "services/backend/flows/entity_creation.md",
       "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
     },
     {
+      "path": "services/backend/flows/entity_update.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/vertex_op_flow.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
       "path": "services/backend/flows/clash_detect_and_resolve.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/planning_cycle_lifecycle.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/planning_submission_flow.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/bulk_import_flow.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/permit_import_flow.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/report_export_flow.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/geometry_cut_flow.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/floor_plan_upload_flow.md",
+      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+    },
+    {
+      "path": "services/backend/flows/invite_accept_flow.md",
       "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
     },
     {
