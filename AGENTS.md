@@ -258,10 +258,10 @@ Introductory prose, transitional phrases, restated headers, recaps, generic best
 
 | Page type | Max lines |
 |---|---|
-| Module | 200 |
-| Flow | 150 |
-| API channel | 100 |
-| Glossary entry | 10 |
+| Module | 150 | 250 |
+| Flow | 100 | 200 |
+| API channel | 80 | 150 |
+| Glossary entry | 5 | 10 |
 
 ### Bidirectional cross-references
 

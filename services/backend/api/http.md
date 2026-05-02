@@ -5,61 +5,82 @@ channel: http
 
 # HTTP API
 
+## Auth & Users
+
+| Prefix | Methods | Auth | Notes |
+|---|---|---|---|
+| `/api/auth/` | GET, POST | Bearer | Profile, change password |
+| `/api/users/` | GET | Bearer | Bulk lookup by ID |
+| `/api/memberships/` | GET, POST, DELETE | Bearer | Pending approvals |
+| `/api/invites/` | GET, POST, DELETE | Bearer | Email invites |
+| `/api/invite-links/` | GET, POST, DELETE | Bearer / None | Shareable invite links |
+
+## Site & Config
+
+| Prefix | Methods | Auth | Notes |
+|---|---|---|---|
+| `/api/sites/` | GET, POST, PATCH, PUT, DELETE | Bearer / open | Site CRUD, settings, lock |
+| `/api/site-maps/` | GET, POST | Bearer | Map layers |
+| `/api/contractors/` | GET, POST, PATCH, DELETE | Bearer / open | Contractor CRUD |
+| `/api/shifts/` | GET, POST, DELETE | Bearer | Shift scheduling |
+| `/api/sites/{id}/label-styles/` | GET, PUT | Bearer | Text label styles |
+
 ## Entity CRUD
 
-| Route | Method | Auth | Flow | Notes |
-|---|---|---|---|---|
-| `/api/tokens/` | GET/POST | Bearer | entity_creation | Site-scoped |
-| `/api/zones/` | GET/POST | Bearer | entity_creation | Polygon geometry |
-| `/api/fences/` | GET/POST | Bearer | entity_creation | Safety boundaries |
-| `/api/sections/` | GET/POST | Bearer | entity_creation | Phased areas |
-| `/api/plants/` | GET/POST | Bearer | entity_creation | Equipment assets |
-| `/api/workers/` | GET/POST | Bearer | entity_creation | Personnel |
+| Prefix | Methods | Auth | Notes |
+|---|---|---|---|
+| `/api/workers/` | GET, POST, PATCH, PUT, DELETE | Bearer | Personnel; contractor-scoped |
+| `/api/plant/` | GET, POST, PATCH, PUT, DELETE | Bearer | Equipment; schedule groups |
+| `/api/deliveries/` | GET, POST, PATCH, DELETE | Bearer | Delivery windows |
+| `/api/pois/` | GET, POST, PATCH, DELETE | Bearer | Site markers |
+| `/api/text-labels/` | GET, POST, PATCH, DELETE | Bearer | Text annotations |
+| `/api/floor-plans/` | GET, POST, PATCH, DELETE | Bearer | GeoTIFF/image upload |
+| `/api/smart-groups/` | GET, POST, PATCH, DELETE | Bearer | Per-user filters |
 
-## Planning
+## Planning & Clash
 
-| Route | Method | Auth | Flow | Notes |
-|---|---|---|---|---|
-| `/api/planning-cycles/` | GET/POST | Bearer | planning_cycle | Create / list cycles |
-| `/api/planning-cycles/{id}/import-baseline` | POST | Bearer | planning_cycle | Shadow baseline into cycle |
-| `/api/planning-cycles/{id}/actualize` | POST | Bearer | planning_cycle | Fork planned → actual |
-| `/api/planning-cycles/{id}/submit` | POST | Bearer | planning_cycle | Submit for review |
+| Prefix | Methods | Auth | Notes |
+|---|---|---|---|
+| `/api/planning-cycles/` | GET, POST, PATCH | Bearer | Draft → active → archived |
+| `/api/clashes/` | GET, POST | Bearer | Detect & resolve |
+| `/api/clash-rules/` | GET, POST, PATCH, DELETE | Bearer | Rule CRUD, DSL, versions |
+| `/api/rule-profiles/` | GET, POST, PATCH, DELETE | Bearer | Profile activation, clone |
 
-## Clash
+## Reports & Audit
 
-| Route | Method | Auth | Flow | Notes |
-|---|---|---|---|---|
-| `/api/clashes/` | GET | Bearer | clash_detect_and_resolve | List computed clashes |
-| `/api/clash-rules/` | GET/POST | Bearer | clash_detect_and_resolve | Rule management |
-| `/api/clash-rules/{id}/evaluate` | POST | Bearer | clash_detect_and_resolve | On-demand evaluation |
-
-## Reports
-
-| Route | Method | Auth | Flow | Notes |
-|---|---|---|---|---|
-| `/api/reports/` | GET/POST | Bearer | report_export | Session management |
-| `/api/reports/{id}/export/pdf` | POST | Bearer | report_export | PDF generation |
-| `/api/reports/{id}/export/docx` | POST | Bearer | report_export | DOCX generation |
-
-## Admin
-
-| Route | Method | Auth | Flow | Notes |
-|---|---|---|---|---|
-| `/api/sites/` | GET/POST | Bearer | — | Site management |
-| `/api/users/` | GET | Bearer | — | User listing |
-| `/api/health` | GET | None | — | Liveness probe |
-
-## Geometry
-
-| Route | Method | Auth | Flow | Notes |
-|---|---|---|---|---|
-| `/api/geometry-operations/cut` | POST | Bearer | entity_creation | Polygon cutting |
-| `/api/geometry-operations/vertex` | POST | Bearer | entity_creation | Vertex OT edits |
+| Prefix | Methods | Auth | Notes |
+|---|---|---|---|
+| `/api/reports/` | GET, POST, PATCH, DELETE | Bearer | PDF/DOCX export sessions |
+| `/api/exports/` | GET, POST | Bearer | Site PDF/GeoJSON |
+| `/api/audit/` | GET, POST | Bearer | Audit log, revert |
 
 ## Imports
 
-| Route | Method | Auth | Flow | Notes |
-|---|---|---|---|---|
-| `/api/bulk-import/` | POST | Bearer | — | CAD / CSV bulk ingest |
-| `/api/bundle-import/` | POST | Bearer | — | Floor plan bundle |
-| `/api/permit-import/` | POST | Bearer | — | Permit data ingest |
+| Prefix | Methods | Auth | Notes |
+|---|---|---|---|
+| `/api/import/` | GET, POST | Bearer | CSV/GeoJSON bulk ingest |
+| `/api/bundle-import/` | POST | Bearer | .sob bundle |
+| `/api/permits/` | GET, POST, DELETE | Bearer / open | XLSX permits; formats public |
+| `/api/geometadata/` | GET, POST, PATCH, PUT, DELETE | Bearer | GeoJSON/SHP upload |
+
+## Geometry & Maps
+
+| Prefix | Methods | Auth | Notes |
+|---|---|---|---|
+| `/api/geometry/` | GET, POST | Bearer | Cut, undo; lock aware |
+| `/api/tiles/` | GET | None | Raster, vector, floor-plan |
+| `/api/weather/` | GET | Bearer | Site weather forecast |
+
+## System
+
+| Prefix | Methods | Auth | Notes |
+|---|---|---|---|
+| `/api/health/` | GET | None | Liveness, readiness probes |
+| `/api/_test/` | GET, POST | None | Test-only; env-gated |
+| `/api/alerts/` | GET, POST, PATCH, DELETE | Bearer | Site alerts |
+
+## Permissions
+
+All Bearer routes validate JWT via `core_auth::authenticate_token` then check
+`core_rbac::require_site_permission` or `has_site_permission`. Public (`open`)
+endpoints skip auth but may still require `entity_view` for site-scoped data.
