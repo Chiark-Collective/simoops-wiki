@@ -131,6 +131,14 @@ Domains: `contractor`, `shift`, `label_style`, `smart_group`, `site_map`, `clash
 | `vertex_op_applied` | OT payload |
 | `vertex_op_ack` | OT payload |
 
+### Permit / Import / Lock
+
+| Event | Payload | Frontend handler |
+|-------|---------|------------------|
+| `permit_count_updated` | `{ event, permit_id, seq? }` | `PermitService` → reloads permits |
+| `bulk_import_completed` | `{ event, created_count, skipped_count, seq? }` | Emitted to `events$` |
+| `data_lock_changed` | `{ event, entity_type, entity_id, data, seq? }` | `DataLockService.handleLockChanged` |
+
 ### Catch-up response
 
 | Event | Payload |
