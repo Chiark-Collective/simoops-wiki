@@ -29,7 +29,7 @@
 | Superadmin bypass | System-level users (`is_superadmin=True`) skip all role-based and site-scoped checks. |
 | Verified membership | A `SiteMembership` with `verified=True`; unverified memberships are invisible to RBAC. |
 | Synthetic membership | In-memory `SiteMembership` created for superadmins lacking an explicit site record. |
-| Contractor filter | `UUID | None` value used to scope entity queries; `None` means no contractor restriction. |
+| EntityFilter | Discriminated union `AdminFilter | NoAccess | ContractorFilter` returned by RBAC visibility helpers. Replaces the previous `UUID | None` ambiguity. |
 | Site | The top-level organizational unit; contains entities, shifts, users. |
 | Schedule group | A collection of entities sharing a temporal pattern; resolved into occurrences per shift. |
 | Occurrence | A concrete time-bound instance of a schedule group within a specific shift. |
@@ -72,3 +72,10 @@
 | Clash cache generation | Monotonic counter per site/shift; cache keys include generation to detect invalidation. |
 | JWKS cache | In-memory cache of Keycloak public keys; stale on prolonged outage. |
 | Presigned URL | Time-limited S3 URL for direct client upload/download without proxying through the backend. |
+| SyncCoordinator | Generic per-entity-kind helper owning optimistic snapshots, 409 rollback, WS dedup, and tombstones. Composed inside domain services. |
+| RecreatableMapSource | Typed MapLibre GeoJSON source wrapper that recreates on first empty→populated transition and replays filter/layout/paint/feature-state across recreations. |
+| ViewModeService | Canonical source of dashboard view state (`editing_plan`, `editing_actual`, `viewing_submitted`, `compare`, `revision`). Replaces fragmented flags across `RevisionModeService` and `PlanningCycleService`. |
+| ViewState | Discriminated union of five dashboard modes owned by `ViewModeService`. |
+| PendingStorageDelete | Persistent retry queue row for failed S3 deletions; swept every 60s with exponential backoff capped at 24h. |
+| BuildingVisibilityPolicy | Computes floor-based opacity and indicators for indoor entities, with `revisionModeActive` override for revision-mode UX. |
+| Topological sort | `graphlib.TopologicalSorter` used to derive report provider run order from declared `requires`/`provides` dependencies. |

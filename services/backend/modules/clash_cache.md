@@ -5,7 +5,7 @@ paths: [backend/app/services/clash/clash_cache.py]
 flows: [clash_detect_and_resolve]
 touches: []
 external: []
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
 ---
 
 ## Purpose
@@ -22,6 +22,7 @@ subscribers via WebSocket.
 - `clash_cache.py::ClashCache.invalidate_site(site_id)` → None
 - `clash_cache.py::ClashCache.invalidate_all()` → None
 - `clash_cache.py::derive_entity_severity(results)` → dict[str, str]
+- `clash_cache.py::invalidate_clash_cache(site_id)` → None — centralised invalidation; callers import from `services/clash/clash_cache`
 - `clash_cache.py::ClashCacheEntry` — dataclass holding legacy and canonical result shapes
 
 ## State
@@ -48,6 +49,7 @@ Invariants:
 - Resolutions loaded and annotated after computation; unresolved clashes feed `derive_entity_severity`
 - Broadcast payload carries BOTH `legacy_clashes` and `clash_rule_results` during ADR D1 deprecation window
 - `_debounced_recompute` opens fresh `async_session_factory()` session — NOT the request session
+- `invalidate_clash_cache` was previously duplicated in `entity_broadcast.py` and `feature_broadcast.py`; now consolidated here
 - Empty rule set still stores empty entry to avoid repeated DB round-trips
 
 ## Touches

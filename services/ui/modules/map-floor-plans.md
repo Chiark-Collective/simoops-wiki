@@ -7,6 +7,7 @@ paths:
   - services/floor-plan-placement.service.ts
   - map/map-building-focus-coordinator.ts
   - services/building-focus.service.ts
+  - utils/building-visibility-policy.ts
 flows:
   - Floor plan drop-to-place: idle → floor-selection → positioning → saving
   - Building focus: select → floor cycle → paint updates → visibility filter
@@ -17,7 +18,7 @@ touches:
 external:
   - TiTiler tile proxy (`/tiles/floor-plan/{id}/tilejson.json`)
   - Geometadata API (upload, update, delete, image blob)
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
 ---
 
 ## Purpose
@@ -32,12 +33,14 @@ Manages floor plan raster tile display on the map, interactive positioning of no
 - `services/floor-plan-placement.service.ts::PlacementMode` — Union type for the placement lifecycle: `'idle' | 'floor-selection' | 'positioning' | 'saving'`.
 - `services/floor-plan-placement.service.ts::PlacementState` — Full state shape for the placement workflow including file, building, level, image dimensions, and placement parameters.
 - `services/floor-plan-placement.service.ts::FloorPlanPlacementService` — State machine managing drop-to-place workflow, conflict retry on upload, and readjustment of existing floor plans.
-- `map/map-building-focus-coordinator.ts::BuildingFocusHost` — Interface the host component implements to supply map, features, visibility settings, and repaint hooks.
+- `map/map-building-focus-coordinator.ts::BuildingFocusHost` — Interface the host component implements to supply map, features, visibility settings, and repaint hooks. Includes `revisionModeActive` flag for indoor display gating in revision mode.
 - `map/map-building-focus-coordinator.ts::isFeatureFloorHidden` — Pure function checking whether a feature is hidden by floor-based opacity.
 - `map/map-building-focus-coordinator.ts::MapBuildingFocusCoordinator` — Owns selected building, focused floor, and hovered building state; drives map paint updates and synchronous repaints.
 - `services/building-focus.service.ts::BuildingFocusContext` — `{ building, floor }` context for focus subscribers.
 - `services/building-focus.service.ts::BuildingPopupState` — Hover popup state with building, position, and floor entity counts.
 - `services/building-focus.service.ts::BuildingFocusService` — Manages building selection, floor cycling, hover popups, elevation intervals, and floor-based visibility calculations.
+- `utils/building-visibility-policy.ts::computeFloorDisplayDecision` — Shared floor and elevation visibility rules. When `revisionModeActive` is true and no floor focus is active, indoor entities surface at full opacity regardless of `indoorMode`; an active floor focus still dims off-floor entities.
+- `utils/building-visibility-policy.ts::computeAreaFloorOpacity` — Area-specific projection of `computeFloorDisplayDecision` with `indoorMode: 'always'`.
 
 ## State
 `MapFloorPlanController` holds `currentKey` (composite `{id}|{atTime}|{revision_hash}` for idempotency) and `currentFeatureId` (for crosshatch dimming). `currentKey === null` → no source or layer exists on the map.
@@ -63,7 +66,9 @@ Manages floor plan raster tile display on the map, interactive positioning of no
 
 **Building focus paint updates.** `MapBuildingFocusCoordinator::setFocus` triggers `updateBuildingHighlight` and `updateRasterDimming`, then calls synchronous `repaintBeacons`, `repaintGeometadata`, and `repaintBuildingBadges`. `updateBuildingHighlight` sets `fill-opacity` and `line-width`/`line-color` paint properties on `geometadata-fill` and `geometadata-outline` using `case` expressions keyed by `id` and `feature-state`. `updateRasterDimming` lowers the base `raster` layer opacity when an elevated floor is focused.
 
-**Floor visibility filtering.** Both `MapBuildingFocusCoordinator` and `BuildingFocusService` delegate floor visibility decisions to `computeFloorDisplayDecision`. The coordinator's `getFloorBasedOpacity` and `getFloorIndicator` resolve entity elevation intervals via `getElevationInterval` and pass `indoorMode`, `elevationGrace`, and `forceShowAllTokens`. `BuildingFocusService::countItemsPerFloor` and `setHoveredBuilding` use FK-first authority (`building_feature_id` match) before falling back to spatial containment.
+**Floor visibility filtering.** Both `MapBuildingFocusCoordinator` and `BuildingFocusService` delegate floor visibility decisions to `computeFloorDisplayDecision`. The coordinator's `getFloorBasedOpacity` and `getFloorIndicator` resolve entity elevation intervals via `getElevationInterval` and pass `indoorMode`, `elevationGrace`, `forceShowAllTokens`, and `revisionModeActive`. `BuildingFocusService::countItemsPerFloor` and `setHoveredBuilding` use FK-first authority (`building_feature_id` match) before falling back to spatial containment.
+
+**Revision mode indoor display.** `computeFloorDisplayDecision` receives `revisionModeActive` from the host. When true and no floor focus is active, every indoor entity surfaces at full opacity so the snapshot reads as "what was there at moment T". An active floor focus still dims off-floor entities the same way as live mode, preserving the user's deliberate floor choice.
 
 ## Touches
 - MapLibre GL JS raster/image sources and layers, feature-state, paint expressions, layer event binding, coordinate systems.
@@ -76,3 +81,7 @@ Manages floor plan raster tile display on the map, interactive positioning of no
 - `BuildingFocusService::countItemsPerFloor` and `setHoveredBuilding` must use FK-first authority to stay consistent with `map-source-manager.ts:updateBuildingBadges`; spatial fallback alone drifts after polygon edits.
 - `MapBuildingFocusCoordinator` updates paint properties directly on the map; the host must ensure the map instance exists or the calls are no-ops.
 - `computeInitialScaleMpp` returns `0.5` fallback when the building polygon is unusable.
+- `BuildingFocusHost` no longer exposes `bypassFloorDimming`. Floor focus dimming applies in every mode; revision mode indoor display is handled by `BuildingVisibilityPolicy` via the `revisionModeActive` host field.
+- `computeFloorDisplayDecision` treats `revisionModeActive === true` with no floor focus as "show all indoor entities at full opacity". This overrides `indoorMode` (`hover` / `select`) so historical snapshots render comprehensibly.
+
+(End of file - total 116 lines)

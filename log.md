@@ -29,6 +29,7 @@ Source of truth for tracked sources: [manifest.json](manifest.json)
 | 2026-05-02 | cf53fca | Frontend Phase 2 Batch E: temporal-planning, clash-ui, site-admin, reports deep dives | 4 UI module pages |
 | 2026-05-02 | cf53fca | Frontend flows: 12 user journey flows documented via parallel subagents | 12 flow pages + index updates |
 | 2026-05-02 | cf53fca | Cross-service end-to-end flows: 6 flows bridging frontend and backend | 6 cross-service flow pages + index updates |
+| 2026-05-03 | f9606469 | Gotcha remediation ingest: cf53fca→f9606469 (38 commits, ~100 files). G3/G4 small fixes, G5 architectural cleanups, G7-G11 design-flag clusters, G12 auth observability. | 25 module updates + 6 new pages + gotchas reconciliation + glossary + indexes + shared files |
 
 ## Next ingest targets
 

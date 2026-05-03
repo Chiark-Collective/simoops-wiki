@@ -16,7 +16,7 @@ Keycloak container restart without persistent `kc_data` loses configured redirec
 
 ### Keycloak OOM
 Keycloak fails at 1 GB limit.
-→ Allocate ≥2 GB in production.
+→ Allocate ≥2 GB in production. (`db7e54e0` caps JVM heap at 768m and bumps container mem_limit to 1500m.)
 
 ## Backend
 
@@ -33,8 +33,7 @@ Clash detection recomputes per site + shift + time slice.
 → Large sites with many tokens may trigger expensive recalculations on every entity mutation.
 
 ### RBAC silent failures in filtering
-`get_site_contractor_filter` and `get_entity_visibility_filter` return `None` both when the user is an admin (no filter) and when the user has no verified membership (no access).
-→ Callers cannot distinguish "show everything" from "show everything because no access" without re-checking membership.
+`~` Resolved by `4d32208c`. `get_site_contractor_filter` and `get_entity_visibility_filter` now return a discriminated union `EntityFilter = AdminFilter | NoAccess | ContractorFilter`. `NoAccess` produces `WHERE FALSE`, so ungated callers can no longer leak rows.
 
 ### WebSocket stale permission caches
 Cached `site_role`, `site_contractor_id`, and `can_view_others` on `WebSocketConnection` are set at subscribe time and NEVER auto-refreshed.
@@ -43,6 +42,7 @@ Cached `site_role`, `site_contractor_id`, and `can_view_others` on `WebSocketCon
 ### Membership delete ordering
 When removing a `SiteMembership`, call `invalidate_user_context` **before** deleting the row.
 → If you delete first, `_filter_event_for_user` will deny the `context_invalidated` event because the membership is gone.
+→ **Latent bug:** `membership_service.py::MembershipService.reject` at line 80 deletes the membership with no preceding invalidate. Verified as a real permission-correctness issue.
 
 ### WebSocket ephemeral events are local-only
 `broadcast_ephemeral` does NOT publish to Redis pub/sub.
@@ -51,26 +51,22 @@ When removing a `SiteMembership`, call `invalidate_user_context` **before** dele
 ### Unknown audience types fail closed
 `_audience_admits` returns `False` for unrecognised `AudienceType` values.
 → Adding a new audience type without updating the handler silently drops all events using it.
+→ Partially mitigated by `54ad568f`: exhaustiveness contract test enumerates `get_args(AudienceType)` and asserts each value has a handler.
 
 ### Redis pub/sub no auto-reconnect
-If the Redis connection drops, the listener task exits and stays dead until `start()` is called again.
-→ Cross-worker broadcasts stop until manual restart.
+`~` Resolved by `65f45a6a`. `_listen` is now a supervisor with reconnect-backoff (1s→60s, exponential, capped). Backoff resets if the inner loop processed at least one message before crashing. `is_healthy` distinguishes "running and connected" from "listener still alive".
 
 ### Redis publish silently drops
-`RedisPubSub.publish` returns without error if `_redis` is None.
-→ Transient disconnects cause lost cross-worker broadcasts with only a one-time warning log.
+`~` Partially resolved by `65f45a6a`. `publish` now increments `_dropped_count` and warns on a logarithmic schedule (1, 2, 4, 8, …). Messages are still lost when `_redis is None`; there is no requeue.
 
 ### Redis event log clear() unguarded
-`RedisEventLog.clear()` deletes all event and sequence keys globally.
-→ No production guardrails; misuse causes complete event history loss.
+`~` Resolved by `b8ea3ec5` + `65f45a6a`. `clear()` raises when `environment != "test"`. Key prefixes are now env-scoped (`simoops:{env}:events:`), so a misfired test command cannot nuke production.
 
 ### Data lock timezone stripping
-`data_lock.py` normalises both datetimes to naive UTC before comparison.
-→ If inputs are tz-aware but in different zones, ordering may be wrong for the same UTC instant.
+`~` Resolved by `ad72fbf4`. `_to_aware_utc` converts aware inputs to UTC via `astimezone` and tags naive inputs as UTC. `replace(tzinfo=None)` is no longer used.
 
 ### Entity broadcast used by planning for clash invalidation
-`entity_broadcast.py::invalidate_clash_cache` is imported by planning services (`actualize_service.py`, `submission_service.py`, `submission_snapshot_service.py`).
-→ Tight coupling between entity broadcast and planning; modifying broadcast internals may break planning.
+`~` Resolved by `30128e01`. `invalidate_clash_cache` moved to `services/clash/clash_cache.py`. Direct callers import from there; the tight coupling between entity broadcast and planning is eliminated.
 
 ### Schedule reconcile drops orphaned occurrences
 `schedule_reconcile.py` removes occurrences that no longer match any shift window.
@@ -89,12 +85,12 @@ If the Redis connection drops, the listener task exits and stays dead until `sta
 → Re-import is safe only on fresh cycles.
 
 ### Report provider order is hard-coded
-`providers/registry.py` registers providers in a fixed order. Later providers depend on keys set by earlier ones.
-→ Adding a new provider requires understanding the dependency chain and inserting at the correct position.
+`~` Resolved by `8738a273`. `ContextProvider` Protocol now declares `requires` and `provides` ClassVar tuples. `registry.py` builds run order via `graphlib.TopologicalSorter` and raises on duplicate key, missing producer, or cycle.
 
 ### Weather cache short TTL
-`weather/cache.py` caches Open-Meteo responses with a short TTL (typically minutes).
+`weather/cache.py` caches Open-Meteo responses with a short TTL (15m current / 1h forecast / 5m timeline).
 → Repeated report exports within the same hour re-fetch weather.
+→ Left as-is (`f36da393`); rationale comments at the constants explain Open-Meteo is the free/unkeyed tier and rate-limits per-IP, so global TTL is the right level.
 
 ### Presence heartbeat required
 `presence_manager.py` drops users whose heartbeat expires.
@@ -105,77 +101,89 @@ If the Redis connection drops, the listener task exits and stays dead until `sta
 → Any audit row written before the snapshot column was backfilled is non-revertible.
 
 ### Audit-revert geometry SRID fallback
-`_deserialize_field_value` defaults to `srid=3857` when the SQLAlchemy `Geometry` column has no explicit srid.
-→ If a layer stores geometries in a different projection, reverts silently inject the wrong SRID.
+`~` Resolved by `9d6ac591`. `_deserialize_field_value` now raises on missing SRID instead of silently defaulting to `3857`.
 
 ### Text label delete bypasses broadcast helper
-`text_label_service.py::delete_text_label` calls `ws_manager.broadcast_entity_event` directly instead of `_broadcast_event`.
-→ If broadcast payload formatting changes, deletion may drift from create/update.
+`~` Resolved by `c89b84c2`. `delete_text_label` now routes through `_broadcast_event` instead of calling `ws_manager.broadcast_entity_event` directly.
 
 ### JWKS stale cache on prolonged outage
-`jwks.py::get_jwks` serves stale cache when the Keycloak endpoint is unreachable.
-→ Key rotation during an outage causes token validation failures until the endpoint recovers.
+`~` Resolved by `07feff64`. `get_jwks_cache_age_seconds()` and `is_jwks_serving_stale()` surface cache age. `/health/ready` reports `jwks` component and flips to 503 when age > 2×TTL (10 min) or serving stale. Warns on fresh→stale transition, INFO on recovery.
 
 ### JWKS relaxed issuer boundary
-`decode_keycloak_token` disables issuer verification (`verify_iss: False`).
-→ Tokens from any realm sharing the same Keycloak instance could pass signature validation; only the audience check remains.
+`~` Resolved by `963a5d54`. `SIMOOPS_KEYCLOAK_VERIFY_ISSUER` env knob (default `False`) allows operators to enable issuer verification without a code change once the canonical Keycloak origin is stable.
 
 ### Storage health transient false negatives
-`storage.py::check_health` returns `False` on `OSError`.
-→ DNS blips or temporary network issues appear as permanent unhealthiness in readiness probes.
+`~` Resolved by `07feff64`. `check_health` now returns `Literal["ok", "unreachable", "misconfigured"]`. Permanent `ClientError` codes (`NoSuchBucket`, `AccessDenied`, etc.) are classified as misconfigured; the rest stay unreachable.
 
 ### Storage silent delete failures
-`storage.py::delete_file_no_error` swallows all `BotoCoreError` and `ClientError`.
-→ Cleanup paths may leave orphaned objects without any signal.
+`~` Resolved by `47cd368e` + `0fc7f189`. `delete_file_no_error` is now async and inserts a `PendingStorageDelete` row on failure. `storage_sweep.py` retries every 60s with exponential backoff capped at 24h.
+
+### Storage delete retry queue backlog
+`pending_storage_deletes` backlog ≥ 1000 flips `/health/ready` to 503.
+→ Operators should monitor the `pending_storage_deletes` component to catch runaway accumulation before storage costs spike.
+
+### TIMESTAMPTZ migration for feature_versions
+Migration `096` alters `feature_versions.start_at` / `end_at` from `TIMESTAMP` to `TIMESTAMPTZ`. Pre-migration, writes silently stripped timezone offsets; reads serialised naive datetimes that the frontend parsed as runner-local, causing `isEntityActiveAt` to reject features in revision mode on non-UTC runners.
 
 ## Frontend
 
 ### Zone.js + MapLibre symbol-layer corruption
-GeoJSON sources that start empty and are later populated via `setData` silently fail for symbol layers (`queryRenderedFeatures` returns zero results). Affected sources: delivery pins, inactive cranes, building badges, geometadata.
-→ Use `updateGeoJsonSourceWithRecreate` on the first empty→populated transition; afterwards re-apply visibility and selection state.
+GeoJSON sources that start empty and are later populated via `setData` silently fail for symbol layers.
+→ `~` Mitigated by `bfcbcb21`/`62e111d3`: `RecreatableMapSource` owns the recreate-on-first-populate dance and replays filter/layout/paint/feature-state across recreations. The underlying MapLibre/Zone.js bug still exists; new symbol-layer sources should use `RecreatableMapSource`.
 
 ### MapLibre handlers fire outside Angular zone
-`ngZone.runOutsideAngular` during map construction is required for 60fps performance, but all pointer/drag/hover handlers fire outside the zone. `markForCheck` races under worker contention; signals or explicit `detectChanges` are required in map-driven components.
+`ngZone.runOutsideAngular` during map construction is required for 60fps performance, but all pointer/drag/hover handlers fire outside the zone.
+→ `~` Mitigated by `bfcbcb21`: `mapEventSignal<T>` bridges MapLibre events into Angular signals, bypassing `markForCheck` races.
 
 ### AuthService test token read once at construction
 `window.__SIMOOPS_TEST_TOKEN__` is read in the `AuthService` constructor. Injecting it after bootstrap has no effect.
 → Set the token before `bootstrapApplication` resolves.
 
 ### UserService removes pending invite before API resolves
-`fetchCurrentUser` deletes `simoops_pending_invite_token` from `localStorage` before `acceptInviteLink` resolves. If the API fails, the token is lost and the user must re-enter the invite link.
+`~` Resolved by `99327921`. `fetchCurrentUser` defers `localStorage.removeItem` for `simoops_pending_invite_token` until `acceptInviteLink` resolves. `catchError` leaves both keys in place so the next `/me` retries the acceptance.
 
 ### Dashboard wiring subscriptions are app-scoped
-`DashboardBootstrapWiringService` and `DashboardInteractionWiringService` are `providedIn: 'root'` with `takeUntilDestroyed` bound to the app-scoped `DestroyRef`. If the dashboard component is ever recreated, subscriptions leak.
+`~` Resolved by `6871ba37`. `DashboardBootstrapWiringService` and `DashboardInteractionWiringService` now use component-scoped providers on `DashboardComponent`. `DestroyRef` is the dashboard's, so subscriptions unsubscribe automatically when the dashboard is destroyed.
 
 ### PanelStateService silently swallows parse failures
-`loadLayoutPrefs` returns `{}` on any `JSON.parse` error, causing a full fallback to `DEFAULT_UI_STATE`. Invalid individual fields are also silently dropped.
+`~` Resolved by `b7c3b270`. `JSON.parse` failures now warn via `createLogger('PanelState')` with truncated raw value. Per-field validation drops also emit warnings.
 
 ### WebSocket catch-up dedup races with live events
 `pendingCatchUpSnapshot` is frozen at `sendCatchUp` time. If a live broadcast arrives after send but before the response with `seq > snapshot`, the snapshot threshold prevents silent dropping of legitimately missed events. See `websocket.service.ts::sendCatchUp` "C2 regression" comment.
 
 ### Offline queue optimistic state may drift
-`executeMutation` calls `EntityService.addLocal/updateLocal/removeLocal` optimistically. If the API succeeds but the WS broadcast is delayed, local state may be temporarily out of sync with the server seq.
+`~` Partially resolved by `33216699`. `executeMutation` now suppresses WS delta application during in-flight mutations and rolls back on 500. If the API succeeds but the WS broadcast is delayed, local state may still be temporarily out of sync with the server seq.
 
 ### Map source recreation resets filters and layout properties
-`recreateGeoJsonSource` removes and re-adds the source and its layers. Dynamic `setLayoutProperty`, `setFilter`, and `setFeatureState` changes are lost. Callers must re-apply them after recreation.
+`~` Resolved by `bfcbcb21`. `RecreatableMapSource` records `setFilter` / `setFeatureState` / `setLayoutProperty` / `setPaintProperty` in a typed replay log and replays them on recreation. Callers no longer need to re-apply state manually.
 
 ### SiteContextService getters return new Observable references
-`selectedShift$` and `selectedDate$` are getters returning `TemporalContextService` observables. Binding directly in templates creates a new reference each change-detection cycle; cache in a component property or use `siteContext.context$`.
+`~` Resolved by `ebfa43aa`. `selectedShift$` and `selectedDate$` are now `readonly` fields, not getters. The synchronous `selectedShift`/`selectedDate` getters remain for fresh reads.
 
 ### Sync bindings must be injected eagerly
 `ContractorSyncBinding`, `ShiftSyncBinding`, `InviteSyncBinding`, and others must be injected before the first WS broadcast arrives. Lazy injection (e.g., behind `*ngIf`) misses early events.
+→ `~` Mitigated by `4bdd36cb`: all nine bindings now carry explicit "Materialised once at app start" comments forbidding lazy injection.
 
 ### EntityStore optimistic updates only for tokens and plants
-`updateArea` lacks optimistic-update and 409-rollback logic. Area edits are not protected from concurrent modification conflicts.
+`~` Partially resolved by `4539e12d` + `6c05ffe2`. `SyncCoordinator<T>` now provides optimistic snapshot, 409 rollback, and WS dedup uniformly across tokens, plants, areas, deliveries, POIs, text-labels, and alerts. The design-flag cluster G7 remains open for a full `EntitySyncEngine` abstraction.
 
 ### Revision mode bypasses plan-state filter
-If `RevisionModeService` is enabled and a snapshot is loaded, `_cachedVisible*` arrays contain the snapshot's full set. Mixing live plan-state logic with snapshot data causes empty-map regressions.
+`~` Resolved by `dbcb7815`. `ViewModeService.shouldBypassPlanFilter$` gates the bypass for all read-only modes (revision + viewing_submitted + compare). Inconsistent combined states are now unrepresentable.
 
 ### Clash state is a no-op in revision mode
-`ClashStateService.setClashes` silently skips while `revisionMode.enabled` is true. Live clash data must not overwrite historical snapshot clashes.
+`~` Resolved by `dbcb7815`. `ViewModeService.shouldDropLiveEvents$` gates clash drops for all read-only modes. `ClashStateService.setClashes` now warns via the service logger on each drop instead of going silent.
+
+### ViewModeService setAppMode no-op during revision
+`setAppMode` is a silent no-op while revision is active.
+→ Callers that need to re-apply a mode after exiting revision must trigger the transition separately. The cycle-driven default logic does this automatically.
+
+### RecreatableMapSource replay log growth
+`RecreatableMapSource` accumulates every `setFilter` / `setFeatureState` / `setLayoutProperty` / `setPaintProperty` call in its replay log.
+→ High-frequency dynamic updates (e.g., per-frame hover effects) can cause unbounded log growth. Use `removeFeatureState` to clear entries that should not replay.
 
 ## General
 
 ### WebSocket presence vs database presence
 User may be present in WebSocket room but not reflected in database presence table if Redis is down and fallback event buffer overflows.
 → Do not rely solely on presence table for safety-critical checks.
+

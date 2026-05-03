@@ -5,7 +5,7 @@ paths: [backend/app/services/storage.py]
 flows: []
 touches: [infra/data-stores]
 external: []
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
 ---
 
 ## Purpose
@@ -26,8 +26,8 @@ allowed to import boto3.
 - `services/storage.py::ensure_bucket()` → `None` — idempotent bucket creation
 - `services/storage.py::generate_presigned_url(key, expires_in)` → `str`
 - `services/storage.py::delete_file(key)` → `None`
-- `services/storage.py::delete_file_no_error(key)` → `None` — logs and swallows errors
-- `services/storage.py::check_health()` → `bool`
+- `services/storage.py::delete_file_no_error(key, *, site_id=None, session=None)` → `None` — async; on `StorageError` inserts `PendingStorageDelete` into caller's session
+- `services/storage.py::check_health()` → `Literal["ok", "unreachable", "misconfigured"]`
 - `services/storage.py::parse_s3_uri(uri)` → `tuple[str, str]` — bucket and key
 
 ## State
@@ -45,7 +45,8 @@ Invariants:
 - `upload_file` uses `client.upload_file`; `upload_bytes` uses `client.upload_fileobj` with `BytesIO`
 - `get_object` returns both body and `ContentType`; `get_file_bytes` returns only body
 - `object_exists` uses `head_object` and catches `ClientError` to return `False`
-- `check_health` uses `head_bucket` and collapses all boto3/network failures to `False`
+- `check_health` uses `head_bucket`; misconfiguration codes (NoSuchBucket, AccessDenied, …) return `"misconfigured"`, all other failures return `"unreachable"`
+- `delete_file_no_error` runs S3 delete in thread via `asyncio.to_thread`; on failure adds `PendingStorageDelete` row to the supplied `session`
 - `parse_s3_uri` validates `s3://` prefix and non-empty key; raises `ValueError` on malformed input
 
 ## Touches
@@ -54,7 +55,5 @@ Invariants:
 | infra/data-stores | boto3 S3 client to MinIO endpoint | Object storage for files, images, exports |
 
 ## Gotchas
-- `delete_file_no_error` swallows ALL `BotoCoreError` and `ClientError`; use `delete_file` when you need to know about failures
-- `check_health` returns `False` on ANY exception including `OSError`; transient network blips appear as permanent unhealthiness
 - `generate_presigned_url` defaults to 1 hour expiry; callers needing longer must override `expires_in`
 - All operations assume the bucket already exists; call `ensure_bucket()` at startup if running in fresh environments

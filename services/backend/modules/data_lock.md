@@ -5,7 +5,7 @@ paths: [backend/app/core/data_lock.py]
 flows: []
 touches: []
 external: []
-last_verified_commit: 9b0d86029a07dc6995ab5dc9f883ef48d6346f9b
+last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
 ---
 
 ## Purpose
@@ -18,7 +18,7 @@ before the site's lock boundary.
 - `core/data_lock.py::require_not_locked(entity_end_at, site, membership_role, is_superadmin, action)` → None
 
 ## Internals
-- Both datetimes normalized to naive UTC (`replace(tzinfo=None)`) before comparison to prevent `TypeError` between tz-aware and naive timestamps
+- `_to_aware_utc` normalizes datetimes before comparison: aware inputs converted to UTC via `astimezone`; naive inputs tagged as UTC via `replace(tzinfo=timezone.utc)`
 - All-day entities (`end_at is None`) are never locked
 - If `lock_boundary` is None, nothing is locked
 - Admin/superadmin bypass evaluated before lock check in `require_not_locked`
@@ -31,7 +31,6 @@ before the site's lock boundary.
 | infra/data-stores | Reads `site.data_locked_before` | Lock boundary originates from DB |
 
 ## Gotchas
-- Timezone stripping compares naive local times; if both inputs are tz-aware but in different zones, ordering may be wrong for the same UTC instant
 - `action` parameter is interpolated directly into the 403 detail string; do not pass user-controlled values
 - Only `SiteRole.admin` qualifies as admin; any other role is treated as non-admin if `is_superadmin` is False
 - Entities without `end_at` are completely exempt from locking

@@ -5,10 +5,8 @@ paths: [backend/app/services/report/report_export_orchestrator.py, backend/app/s
 flows: [services/backend/flows/report_export_flow.md]
 touches: [postgis, minio]
 external: [open_meteo]
-last_verified_commit: TBD
+last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
 ---
-
-# Report Pipeline
 
 ## Purpose
 Coordinates report export workflow. Resolves template context, fetches weather data, assembles branding, and renders PDF or DOCX output.
@@ -24,7 +22,7 @@ Coordinates report export workflow. Resolves template context, fetches weather d
 - `report_data_assembler.py::assemble_report_data(session, payload, site)` → FullReportData
 
 ## State
-None. Stateless orchestration. All state in DB.
+None at module level. Stateless orchestration. All persistent state in DB.
 
 | State | Location | Notes |
 |---|---|---|
@@ -33,8 +31,8 @@ None. Stateless orchestration. All state in DB.
 | YAML template cache | process memory | Loaded once per process from `report_templates/` |
 
 ## Internals
-- Template schema drives section assembly via provider registry
-- Providers: `clash_context`, `deliveries_context`, `permits_context`, `plants_context`, `workers_context`
+- Template schema drives section assembly via provider registry → [report_providers](report_providers.md)
+- Provider run order derived from declared `requires`/`provides` dependencies via topological sort
 - Weather fetched only if template includes `weather_timeline` section
 - Date range derived from `query_start`/`query_end` or `context_snapshot.date`
 - Scene images passed as base64; resolved by `scene_id` lookup

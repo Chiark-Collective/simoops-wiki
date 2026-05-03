@@ -16,6 +16,7 @@ paths:
   - src/app/map/map-dirty-flag-scheduler.ts
   - src/app/map/map-ephemeral-position-throttler.ts
   - src/app/map/map-svg-icons.ts
+  - src/app/map/map-source-utils.ts
 flows: []
 touches:
   - Canvas
@@ -24,7 +25,7 @@ touches:
   - requestAnimationFrame
 external:
   - geogrid-maplibre-gl
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
 ---
 
 ## Purpose
@@ -75,6 +76,11 @@ Visual overlays and effects on the SimOops map: metric grid, distance measuremen
 - `app/map/map-svg-icons.ts::ensureDeliveryPinIcon` — Per-contractor-colour delivery teardrop pin with truck glyph.
 - `app/map/map-svg-icons.ts::ensureBuildingBadgeImage` — Cached canvas badge for upper-floor worker/area counts.
 
+### Source utilities
+- `app/map/map-source-utils.ts::RecreatableMapSource` — Typed wrapper around a GeoJSON source + layers. Owns the empty→populated recreation workaround for the Zone.js/MapLibre bug, then replays recorded `setFilter` / `setFeatureState` / `setLayoutProperty` / `setPaintProperty` calls so dynamic state survives the recreate cycle.
+- `app/map/map-source-utils.ts::updateGeoJsonSource` / `recreateGeoJsonSource` / `updateGeoJsonSourceWithRecreate` — Free-function helpers for the same workaround.
+- `app/map/map-source-utils.ts::mapEventSignal` — Bridges a MapLibre event into an Angular signal, unregistering on `DestroyRef` destroy. Needed because MapLibre handlers fire outside NgZone and `markForCheck` races under worker contention.
+
 ### Scheduling & sync
 - `app/map/map-dirty-flag-scheduler.ts::MapDirtyFlagScheduler` — Batches expensive source updates into a single `requestAnimationFrame` flush.
 - `app/map/map-dirty-flag-scheduler.ts::MapDirtyFlags` — Flag bag controlling which sources need repaint.
@@ -90,6 +96,7 @@ Visual overlays and effects on the SimOops map: metric grid, distance measuremen
 - `MapDirtyFlagScheduler` — `flags: MapDirtyFlags`, `scheduled: boolean`, `rafId: number`.
 - `EphemeralPositionThrottler` — `lastSendTime: Map<string, number>`, `inboundSubs: Array<{ unsubscribe }>`.
 - `SvgIconManager` — `icons: Map<string, { img, baseSize, basePixelRatio, currentRasterSize, zoomAdaptive }>`, `map`, `zoomHandler`.
+- `RecreatableMapSource` — `recreated: Set<string>` (shared module-level tracker), `appliedFilters: Map<string, unknown>`, `appliedFeatureStates: Map<string | number, Record<string, unknown>>`, `appliedLayoutProps: Map<string, Map<string, unknown>>`, `appliedPaintProps: Map<string, Map<string, unknown>>`.
 
 ## Internals
 
@@ -154,3 +161,5 @@ Inbound subscriptions mutate the host's `tokens` and `plant` arrays in place, th
 - `MapAlertAnimation` `setOpacityScale` is used to dim alerts when other toolbar badges are hovered. Setting `baseScale` while animating is safe; setting it while stopped resets the layer immediately.
 - `EphemeralPositionThrottler` mutates host arrays in place to bypass `FilteredEntityCache` rebuilds. Direct mutation means change detection does not fire; beacon rebuilds must be triggered explicitly.
 - `registerAreaPatterns` expects SVGs with a single `<path>` element; multi-path icons silently render only the first path.
+- `RecreatableMapSource` shares its recreate tracker with `updateGeoJsonSourceWithRecreate` via a module-level `WeakMap<MLMap, Set<string>>`. Mixing class and free-function usage on the same source is safe, but calling `setData` directly on the MapLibre source bypasses the tracker and can break the replay log.
+- `mapEventSignal` registers a native MapLibre handler. Callers must pass a `DestroyRef` or the handler leaks.

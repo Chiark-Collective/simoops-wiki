@@ -33,6 +33,7 @@ last_verified_commit: TBD
 | [modules/jwks.md](modules/jwks.md) | Keycloak JWKS client for RS256 validation |
 | [modules/permissions.md](modules/permissions.md) | Permission enum and role-to-permission mapping |
 | [modules/storage.md](modules/storage.md) | S3-compatible object storage abstraction |
+| [modules/storage_sweep.md](modules/storage_sweep.md) | Background retry sweep for failed S3 deletions |
 
 ### Entity Management
 

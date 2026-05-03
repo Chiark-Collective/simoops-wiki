@@ -28,7 +28,7 @@ external:
   - ConsoleLogService
   - createLogger
   - ApiError
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
 ---
 
 ## Purpose

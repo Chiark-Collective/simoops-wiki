@@ -9,7 +9,7 @@ touches:
   - services/backend/modules/core_rbac.md
   - services/backend/modules/websocket_runtime.md
 external: []
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
 ---
 
 ## Purpose
@@ -32,7 +32,7 @@ None at module level. All state is persistent (PostGIS).
 - All authenticated site members can list text labels; CUD is gated by `Permission.entity_manage_any`
 - Audit entries use `entity_type="text_label"` with the label title as `entity_label`
 - Deletion hard-deletes the row (no tombstone mechanism because text labels have no planning cycle)
-- `delete_text_label` broadcasts `entity_deleted` directly via `ws_manager` rather than `_broadcast_event`
+- `delete_text_label` routes through `_broadcast_event` helper for uniform behaviour across create/update/delete
 
 ## Touches
 | resource | how | why |
@@ -45,4 +45,3 @@ None at module level. All state is persistent (PostGIS).
 - Text labels have no contractor association; all site members see every label
 - `position_wgs84` is optional in the model but typically provided by the frontend
 - No data lock check because text labels are permanent site fixtures, not time-bound entities
-- `delete_text_label` bypasses `_broadcast_event` and calls `ws_manager.broadcast_entity_event` directly

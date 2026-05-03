@@ -55,6 +55,8 @@ Angular standalone application. Boots via `bootstrapApplication` with zoneless c
 | Page | What |
 |---|---|
 | [modules/temporal-planning.md](modules/temporal-planning.md) | Temporal context, planning cycle, revision mode, gantt, schedule |
+| [modules/view-mode.md](modules/view-mode.md) | Canonical view state source: `editing_plan`, `editing_actual`, `viewing_submitted`, `compare`, `revision` |
+| [modules/revision-mode-navigation.md](modules/revision-mode-navigation.md) | RevisionModeService: snapshot cache, per-type streams, entry/exit |
 | [modules/clash-ui.md](modules/clash-ui.md) | Clash state, interaction, rules, profiles, resolution sync |
 
 ### Administration & Reports
@@ -69,6 +71,7 @@ Angular standalone application. Boots via `bootstrapApplication` with zoneless c
 | Page | What |
 |---|---|
 | [modules/realtime-sync.md](modules/realtime-sync.md) | WebSocket connection, event router, presence, offline queue, undo |
+| [modules/sync-coordinator.md](modules/sync-coordinator.md) | Generic optimistic-update, rollback, and WS-dedup helper per entity kind |
 
 ## Contracts
 

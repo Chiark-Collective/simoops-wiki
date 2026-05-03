@@ -17,12 +17,13 @@ paths:
   - src/app/services/map-event-dispatch.service.ts
   - src/app/services/map-interaction.service.ts
   - src/app/services/map-interaction.types.ts
+  - src/app/utils/intersection.ts
 flows: []
 touches: []
 external:
   - maplibre-gl
   - turf-js
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
 ---
 
 ## Purpose
@@ -45,7 +46,7 @@ Coordinates all user interactions on the map: entity dragging, polygon vertex ed
 
 ### Context menus
 - `app/map/map-context-menu.ts::MapContextMenuController` — Hit detection, disambiguation routing, right-click drag FSM, and menu event emission.
-- `app/map/map-context-menu.component.ts::MapContextMenuComponent` — Standalone `@Component` (signals-based) that renders the context-menu UI.
+- `app/map/map-context-menu.component.ts::MapContextMenuComponent` — Standalone `@Component` (signals-based) that renders the context-menu UI. All editing entry points (create, edit, delete, change type, edit shape, delete feature) call `viewMode.guardEdit` before proceeding.
 
 ### Selection tools
 - `app/map/map-selection-tools.ts::MapSelectionToolsController` — Box and lasso selection with Turf.js polygon intersection; emits selected entities via `SelectionService`.
@@ -60,6 +61,11 @@ Coordinates all user interactions on the map: entity dragging, polygon vertex ed
 - `app/services/map-interaction.types.ts::MapInteractionEvent` — Discriminated union covering all 59+ event types.
 - `app/services/map-event-dispatch.service.ts::MapEventDispatchService` — `@Injectable` subscriber that dispatches `MapInteractionEvent`s to injected orchestrator services and component callbacks.
 - `app/services/map-event-dispatch.service.ts::MapEventCallbacks` — Thin callback interface for events requiring component-local state or ViewChild access.
+
+### Containment utilities
+- `app/utils/intersection.ts::computeTokenFeatureIntersections` — Token footprint against place-like features with building/floor gating.
+- `app/utils/intersection.ts::computeFeatureContainment` — Enumerates tokens/plants/areas inside a selected feature for the "Contains" panel. Skips `INFRASTRUCTURE_AREA_FEATURE_TYPES` (`building`, `zone`) so only user-drawn activity polygons are listed.
+- `app/utils/intersection.ts::aggregateIntersections` / `aggregateFeatureContainment` — Multi-selection roll-ups.
 
 ## State
 
@@ -92,7 +98,9 @@ Invariant: `readOnly || isAnyDragActive()` ⟂ new drag start.
 
 `MapContextMenuComponent` (signals):
 - `mainMenu`, `entityMenu`, `layerMenu`, `disambiguation`, `coordsPopup` — nullable signal states.
-- `editingDisabled` — mirrors `RevisionModeService.enabled$`.
+- `createSubmenuOpen`, `layerTypeSubmenuOpen` — signal-driven submenu expansion.
+- `editingDisabled` — drives visual disable for mutating menu items; fed by the read-only predicate stream.
+- `containerHeight` — fed by `ResizeObserver` for flip-up calculations.
 
 ### Selection tools
 `MapSelectionToolsController` maintains:
@@ -165,5 +173,6 @@ Long-press uses a 500 ms timer cancelled by >10 px movement or multi-touch. Enti
 - `PlantDragHandler` inactive cranes live in dedicated sources; plant drag updates both `plants-geojson` and inactive crane sources.
 - `MapVertexEditController` labels layer was removed due to Zone.js/MapLibre tile corruption when symbol layers share a source with circle layers.
 - `MapContextMenuComponent` uses signals instead of `markForCheck` because MapLibre handlers fire outside Angular's zone; `markForCheck` races under worker contention.
+- `computeFeatureContainment` skips `INFRASTRUCTURE_AREA_FEATURE_TYPES` (`building`, `zone`) when enumerating contained areas. Without this filter, selecting a building surfaces overlapping zones and neighbouring buildings as spurious "contents".
 - `MapEventDispatchService` must have `registerCallbacks()` called before `subscribe()`; otherwise the subscription silently errors and no events route to component callbacks.
 - `MapTouchAdapter` multi-touch (>1 finger) aborts both long-press and entity drag to allow MapLibre pinch-zoom.
