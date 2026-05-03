@@ -6,6 +6,18 @@ This document is codebase-agnostic. It describes universal concepts. Concrete ex
 
 ---
 
+## Goal
+
+This repo is a **living documentation wiki** bound to a specific source-code repository. Every page is a contract tied to a commit hash. The wiki answers three questions across the entire system:
+
+1. **What is this?** → `modules/`
+2. **What happens when X?** → `flows/`
+3. **What can occur?** → `api/`, `contracts/`
+
+Out-of-date pages are worse than missing pages. When the source repo advances, this wiki is refreshed or marked stale. The graph of cross-references must be traversable without a search tool.
+
+---
+
 ## Philosophy
 
 - Ingest from code only. Do not trust `CLAUDE.md`, `AGENTS.md`, or `docs/` inside the source repo.
@@ -241,6 +253,32 @@ status: open | stale | merged | superseded
 
 ---
 
+## Shared Files
+
+### `gotchas.md`
+
+A sortable table of cross-service footguns. One row per gotcha.
+
+```md
+| Gotcha | Domain | Status | Found | Resolved / Mitigated By | Description |
+|---|---|---|---|---|---|
+| Name | Backend | Open | 2026-05-02 | `abc1234` | One- or two-sentence description. |
+```
+
+**Columns:**
+- **Gotcha** — short name
+- **Domain** — `Infra` / `Backend` / `Frontend` / `General`
+- **Status** — `Open` / `Resolved` / `Mitigated` / `Partially Resolved`
+- **Found** — date first documented (YYYY-MM-DD)
+- **Resolved / Mitigated By** — commit hash(es), or `—` if open
+- **Description** — the full explanation; keep to 1–3 sentences
+
+**Trailing sections:**
+- **Legend** — define the four statuses
+- **Design-flag clusters** — track open architectural debt (e.g. G7, G8) and link to related gotchas
+
+---
+
 ## Style Rules
 
 ### Symbols (define once)
@@ -256,12 +294,13 @@ Introductory prose, transitional phrases, restated headers, recaps, generic best
 
 ### Length caps
 
-| Page type | Max lines |
-|---|---|
-| Module | 150 | 250 |
-| Flow | 100 | 200 |
-| API channel | 80 | 150 |
+| Page type | Target | Hard cap (enforced by lint.py) |
+|---|---|---|---|
+| Module | 150 | 200 |
+| Flow | 100 | 150 |
+| API channel | 80 | 100 |
 | Glossary entry | 5 | 10 |
+| Gotchas | — | 250 |
 
 ### Bidirectional cross-references
 
@@ -303,12 +342,15 @@ Every link must be round-trippable:
 
 Enforced by `scripts/lint.py`:
 - Broken cross-references
-- Stale `last_verified_commit` (compared to manifest)
-- Orphan pages (no inbound links)
-- Missing flow links
-- Unresolved frontmatter round-trips
+- Orphan pages (no inbound or outbound links)
 - Banned phrases
 - Page length caps
+
+**Not caught by lint.py** — must be verified manually:
+- Stale `last_verified_commit` (diff against manifest)
+- Missing flow links
+- Unresolved frontmatter round-trips
+- Missing `log.md` updates
 
 ---
 
