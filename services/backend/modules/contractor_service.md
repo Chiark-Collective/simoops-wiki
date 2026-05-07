@@ -8,7 +8,7 @@ flows: []
 touches:
   - infra/data-stores
 external: []
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -20,6 +20,12 @@ Routes own HTTP shape; the service owns side effects and validation.
 - `services/contractor_service.py::ContractorService.create_contractor(user, payload, membership)` → Contractor
 - `services/contractor_service.py::ContractorService.update_contractor(user, contractor, payload, membership)` → Contractor
 - `services/contractor_service.py::ContractorService.delete_contractor(user, contractor, membership)` → None
+- `services/contractor_service.py::ContractorService.set_logo(user, contractor, new_key, membership)` → None — persists `logo_path`, audit trail, config broadcast
+- `services/contractor_service.py::ContractorService.clear_logo(user, contractor, membership)` → None — delegates to `set_logo(..., None)`
+- `services/contractor_service.py::to_contractor_read(contractor)` → ContractorRead — populates `logo_url` with cache-busting `?v=` param
+- `api/routes/contractors.py::upload_logo(contractor_id, file, user)` → ContractorRead — `PUT /{contractor_id}/logo`
+- `api/routes/contractors.py::delete_logo(contractor_id, user)` → None — `DELETE /{contractor_id}/logo`
+- `api/routes/contractors.py::get_logo_image(contractor_id)` → Response — `GET /{contractor_id}/logo/image` (public, no auth, Cache-Control 5min)
 - `api/routes/contractors.py::list_contractors_public(site_id, session)` → list[ContractorPublic]
 - `api/routes/contractors.py::list_contractors(site_id, session, user)` → list[ContractorRead]
 - `api/routes/contractors.py::create_contractor(payload, session, user)` → ContractorRead
@@ -32,10 +38,13 @@ None.
 ## Internals
 - Duplicate name checked per-site; raises `ValueError("duplicate_name")`
 - Delete scans Worker, Plant, and GeometadataFeature for dependencies; raises `ValueError(f"has_assigned_{label}")` for the first kind found
-- Audit records created via `entity_broadcast_audit::AuditService` for create/update/delete
-- Config broadcast (`contractor.created/updated/deleted`) emitted after every mutating operation
+- Audit records created via `entity_broadcast_audit::AuditService` for create/update/delete/logo changes
+- Config broadcast (`contractor.created/updated/deleted`) emitted after every mutating operation; logo change triggers `contractor:updated` broadcast
 - Routes translate `ValueError` to 400 HTTPException
 - Contractor colors are generated client-side from the contractor ID
+- Logo upload normalised via `services/logo_normalisation.py` before S3 storage; accepts PNG/JPEG/WebP/SVG up to 2MB
+- `logo_url` returned as backend-proxied path with `?v=<updated_at_timestamp>` for cache busting
+- Delete cleans up logo from S3 after DB delete to prevent orphaned objects
 
 ## Touches
 | resource | how | why |

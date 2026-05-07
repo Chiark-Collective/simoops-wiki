@@ -8,7 +8,7 @@ flows:
   - flows/revision-mode-navigation.md
 touches: []
 external: []
-last_verified_commit: dbcb7815743bb868ff2c71f48501e151fbfbb932
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -24,6 +24,8 @@ Owns the historical revision snapshot data and per-type filtered streams. The mo
 - `services/revision-mode.service.ts::RevisionModeService.compareSnapshots$` / `compareViewModel$` — Split-map data model.
 - Per-type streams: `workers$`, `plants$`, `features$`, `areas$`, `deliveries$`, `pois$`, `textLabels$`, `clashes$`, `floorPlans$`.
 - `services/revision-mode.service.ts::RevisionModeService.guardEdit` — `@deprecated`; delegates to `ViewModeService.guardEdit`.
+- `components/revision-picker-modal.component.ts::RevisionPickerModalComponent` — 3-tab modal: "View at moment" (single), "Compare two times" (compare), "Rewind through revisions" (rewind). Prefills from audit-row context when opened via rewind icon.
+- `components/entity-history-timeline.component.ts::EntityHistoryTimelineComponent` — Chronological audit-entry timeline with revert button, "View on map" button, rewind button, hover preview, compact mode, and diff table for updated entries.
 
 ## State
 - `services/revision-mode.service.ts::RevisionModeService._snapshot$` — `BehaviorSubject<RevisionSnapshot | null>`.
@@ -46,3 +48,5 @@ Owns the historical revision snapshot data and per-type filtered streams. The mo
 - Cache key uses full ISO precision. Truncating to minute aliases distinct audit ticks.
 - `guardEdit` is deprecated. Direct use of `ViewModeService.guardEdit` covers all read-only modes with mode-aware toasts.
 - `FilteredEntityCacheService` bypasses the live plan-state filter when `viewMode.shouldBypassPlanFilter$` is true, because snapshot data is already historical truth.
+- Revision picker prefill: single = view AT timestamp; compare = anchor left on timestamp, right on now; rewind = 24h window centred on timestamp
+- Entity history timeline `showHoverPreview` emits `previewHoverStart`/`previewHoverEnd` so parent can flash map to revision; disabled by default in properties panel to keep timeline passive

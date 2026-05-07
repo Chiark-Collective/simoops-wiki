@@ -44,6 +44,8 @@ Defines the OIDC authentication flow between Angular frontend, FastAPI backend, 
 - `AuthService.checkAuthOnInit()` → `OidcSecurityService.checkAuth()` → stores token → `fetchCurrentUser()`
 - `AuthGuard.canActivate` → `checkAuthOnInit()` → `true` or `UrlTree['/login']`
 - `AuthInterceptor` → attaches Bearer, handles 401 refresh
+- `utils/auth-diag.ts::decodeJwtClaims(token)` → extracts `sub`, `email`, `iss`, `exp` without signature verification
+- `utils/auth-diag.ts::logAuthDiag(tag, data, level)` → console + fire-and-forget POST to `/api/diag/auth-event` with `keepalive: true`
 
 ## OIDC Configuration
 ```ts
@@ -90,6 +92,7 @@ maxIdTokenIatOffsetAllowedInSeconds: 600,
 ## Backend Endpoints
 - `GET /api/auth/me` → `auth.py::get_me` → returns `UserProfile`
 - `POST /api/auth/change-password` → `auth.py::change_password`
+- `POST /api/diag/auth-event` → `diag.py::post_auth_event` — unauthenticated telemetry sink for frontend `[AUTH-DIAG]` events
 - WebSocket: `WS /ws/entities?token=<jwt>` → `_authenticate(token)` → same `authenticate_token()` as HTTP
 
 ## User Resolution
@@ -117,7 +120,7 @@ Rejections:
 |------|-------------|
 | `viewer` | `entity_view`, `clash_view`, `export` |
 | `member` | viewer + `entity_create`, `entity_edit`, `entity_delete`, `planning_submit` |
-| `coordinator` | member + `entity_manage_any`, `audit_view`, `data_lock`, `shift_manage`, `contractor_manage`, `site_map_manage`, `layer_manage`, `building_edit`, `clash_rule_manage`, `invite_manage`, `report_manage`, `planning_manage` |
+| `coordinator` | member + `entity_manage_any`, `audit_view`, `data_lock`, `shift_manage`, `contractor_manage`, `site_map_manage`, `layer_manage`, `building_edit`, `clash_rule_manage`, `invite_manage`, `report_manage`, `planning_manage`, `site_settings_basic` |
 | `admin` | coordinator + `site_settings` |
 | `superadmin` | bypasses all checks (`is_superadmin == true`) |
 

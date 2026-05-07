@@ -12,7 +12,7 @@ paths: [
 flows: [clash_detect_and_resolve]
 touches: []
 external: []
-last_verified_commit: TBD
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 # Clash Detection
@@ -41,6 +41,8 @@ scenes for reporting.
 - `clash_scene_scoring.py::score_and_rank_scenes(clashes, entities, ...)` → list[`ScoredScene`]
 - `clash_result_formatter.py::ClashResultFormatter.convert(result, entities_by_id)` → dict
 - `clash_result_formatter.py::infer_clash_type(entity_a_type, entity_b_type)` → str
+- `routes/clashes.py::_parse_involving(value)` → UUID — parse and validate `?involving=<kind>/<uuid>` query param
+- `routes/clashes.py::_filter_clashes_involving(clashes, entity_id)` → list[dict] — filter to clashes involving a specific entity
 
 ## State
 
@@ -90,3 +92,5 @@ Invariants:
 - Resolved clashes are excluded from `entity_severity` but included in broadcast payload
 - At-time evaluation uses live site config for active profile and exemptions (full reconstruction deferred)
 - `_compute_clashes_sync` filters resolved clashes only for severity; legacy list includes them annotated
+- `GET /api/clashes` wrapped with 15s `asyncio.wait_for` timeout; returns 504 Gateway Timeout on exceed
+- `GET /api/clashes/at-time` accepts optional `?involving=<kind>/<uuid>` parameter to filter results to a specific entity

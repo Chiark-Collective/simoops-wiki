@@ -35,7 +35,7 @@ external:
   - services/selection.service.ts::SelectionService
   - services/building-focus.service.ts::BuildingFocusService
   - map/map.component.ts::MapComponent
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -60,7 +60,7 @@ Centralized clash detection UI state: absorbs raw clash data from API/WebSocket,
 - `services/rule-profile.service.ts::RuleProfileService` — `_profiles`, `_loading`, `_activeProfile`, `_activeProfileSource`, `_selectedProfile`.
 
 ## Internals
-`dashboard/clash-dashboard.component.ts::ClashDashboardComponent` builds id-keyed `ClashEntityLookups` via `buildClashLookups` (O(1) lookups). `toClashViewModel` pre-computes entity names, icons, time windows. `filterByEntityVisibility` filters by visible tokens/plants/areas/roads. `hasTimeOverlap` filters by temporal overlap (inactive crane clashes bypass). Results sorted by `clash_type` priority (crane_crane highest). `scheduleRefresh` debounces HTTP fetches at 100 ms with `switchMap` cancellation; `refreshClashes` bypasses debounce.
+`dashboard/clash-dashboard.component.ts::ClashDashboardComponent` builds id-keyed `ClashEntityLookups` via `buildClashLookups` (O(1) lookups). `toClashViewModel` pre-computes entity names, icons, time windows. `filterByEntityVisibility` filters by visible tokens/plants/areas/roads. `hasTimeOverlap` filters by temporal overlap (inactive crane clashes bypass). Results sorted by `clash_type` priority (crane_crane highest). `scheduleRefresh` debounces HTTP fetches at 1000 ms (was 100 ms) with `switchMap` cancellation; `refreshClashes` bypasses debounce. HTTP fallback debounce increased to reduce request frequency under rapid UI changes.
 
 `services/clash-interaction.service.ts::ClashInteractionService` computes entity-position midpoints for map centering. `onClashDoubleClicked` selects involved entities via `SelectionService` and focuses building floor via `BuildingFocusService`. `getClashEntityPositions` handles token, plant, area centroid, road midpoint lookups. `getClashEntities` returns `SpatialEntity` wrappers (roads excluded). Resolve/unresolve/bulk methods call HTTP endpoints and request a refresh.
 

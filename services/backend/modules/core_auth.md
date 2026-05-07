@@ -5,7 +5,7 @@ paths: [backend/app/core/auth.py, backend/app/core/jwks.py, backend/app/core/sec
 flows: []
 touches: [infra/data-stores]
 external: [keycloak]
-last_verified_commit: 9b0d86029a07dc6995ab5dc9f883ef48d6346f9b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -22,6 +22,7 @@ first login.
   HS256 decode gated to `environment == "test"`.
 - `core/auth.py::_accept_pending_invites(session, email, user_id)` → None
   Best-effort invite acceptance on login; failures logged, never block auth.
+  After creating new memberships, calls `ws_manager.invalidate_user_context(user_id, site_id)` for each newly created site to refresh cached permissions.
 - `core/jwks.py::decode_keycloak_token(token)` → dict | None
   Attempt RS256 decode via cached JWKS; returns None on any failure so caller can fall back.
 - `core/jwks.py::get_jwks()` → dict | None

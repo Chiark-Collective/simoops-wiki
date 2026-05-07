@@ -4,7 +4,7 @@ summary: "FastAPI service: planning cycle, clash detection, entity management, r
 paths: [backend/app/]
 flows: [entity_creation, entity_update, vertex_op_flow, clash_detect_and_resolve, planning_cycle_lifecycle, planning_submission_flow, bulk_import_flow, permit_import_flow, report_export_flow, geometry_cut_flow, floor_plan_upload_flow, invite_accept_flow]
 external: [keycloak, postgis, minio, titiler, redis, open_meteo]
-last_verified_commit: TBD
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 # Backend
@@ -34,6 +34,7 @@ last_verified_commit: TBD
 | [modules/permissions.md](modules/permissions.md) | Permission enum and role-to-permission mapping |
 | [modules/storage.md](modules/storage.md) | S3-compatible object storage abstraction |
 | [modules/storage_sweep.md](modules/storage_sweep.md) | Background retry sweep for failed S3 deletions |
+| [modules/logo_normalisation.md](modules/logo_normalisation.md) | Logo normalisation for map rendering (PNG→512px, SVG passthrough) |
 
 ### Entity Management
 
@@ -116,6 +117,7 @@ last_verified_commit: TBD
 | Page | What |
 |---|---|
 | [modules/auth_invites.md](modules/auth_invites.md) | Email invites and invite links |
+| [modules/auth_diag.md](modules/auth_diag.md) | Unauthenticated telemetry sink for frontend auth diagnostics |
 
 ### Flows
 

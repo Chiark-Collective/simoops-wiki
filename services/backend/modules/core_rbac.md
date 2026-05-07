@@ -5,7 +5,7 @@ paths: [backend/app/core/permissions.py, backend/app/core/rbac.py]
 flows: []
 touches: [infra/data-stores]
 external: []
-last_verified_commit: 4d32208c
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -16,6 +16,7 @@ action on a specific site via their `SiteMembership`.
 - `core/permissions.py::Permission` — Enum of all grantable operations (`entity.create`, `data.lock`, etc.)
 - `core/permissions.py::ROLE_PERMISSIONS` — `dict[SiteRole, frozenset[Permission]]`
 - `core/permissions.py::ROLE_RANK` — `dict[SiteRole, int]`; higher = more privileged
+- `core/permissions.py::Permission.site_settings_basic` — "site.settings.basic" (coordinator-grade)
 - `core/permissions.py::role_has_permission(role, permission)` → bool
 - `core/permissions.py::can_assign_role(inviter_role, target_role)` → bool
 - `core/rbac.py::get_site_membership(user, site_id, session)` → SiteMembership | None
@@ -42,6 +43,8 @@ Invariants:
 - Permission sets are cumulative by rank: viewer == client < member < coordinator < admin
 - `ROLE_PERMISSIONS` and `ROLE_RANK` must remain synchronized with `SiteRole` enum
 - Superadmins bypass all checks regardless of `SiteMembership` existence or verification state
+- `site_settings_basic` added to `_COORDINATOR_PERMISSIONS`; guards site fields editable from Settings → Site tab (cross-contractor visibility, elevation grace, etc.)
+- Contractor scope enforced on entity creation: members may only create entities tagged with their own `contractor_id`
 
 ## Internals
 - `get_site_membership` filters on `verified == True`; unverified memberships are invisible to RBAC
@@ -62,3 +65,4 @@ Invariants:
 ## Gotchas
 - **RESOLVED** — The old silent-filtering ambiguity (`None` meant both "no filter needed" and "deny everything") is eliminated by the `EntityFilter` discriminated union; `NoAccess` produces `WHERE FALSE` and is distinct from `AdminFilter`
 - When removing a `SiteMembership`, call `websocket_runtime::invalidate_user_context` **before** delete so the `context_invalidated` event can still be delivered
+- `site_settings` permission remains admin-only (planning toggles); `site_settings_basic` is coordinator+ (non-planning site fields)

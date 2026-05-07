@@ -1,6 +1,6 @@
 {
   "source_repo": "/Users/williamcheung/Development/simoops",
-  "source_head_commit": "f9606469ce367229c5c91e03c3ba917779015030",
+  "source_head_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2",
   "tracked_pages": [
     {
       "path": "AGENTS.md",
@@ -20,11 +20,11 @@
     },
     {
       "path": "glossary.md",
-      "last_verified_commit": "f9606469ce367229c5c91e03c3ba917779015030"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "gotchas.md",
-      "last_verified_commit": "f9606469ce367229c5c91e03c3ba917779015030"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/index.md",
@@ -32,15 +32,15 @@
     },
     {
       "path": "services/backend/modules/core_auth.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/modules/core_rbac.md",
-      "last_verified_commit": "f9606469ce367229c5c91e03c3ba917779015030"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/modules/websocket_runtime.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/modules/redis_core.md",
@@ -48,7 +48,7 @@
     },
     {
       "path": "services/backend/modules/data_lock.md",
-      "last_verified_commit": "f9606469ce367229c5c91e03c3ba917779015030"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/modules/event_log.md",
@@ -60,7 +60,7 @@
     },
     {
       "path": "services/backend/api/http.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/api/websocket.md",
@@ -72,7 +72,7 @@
     },
     {
       "path": "services/backend/modules/clash_detection.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/modules/clash_rules.md",
@@ -112,7 +112,7 @@
     },
     {
       "path": "services/backend/modules/entity_service.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/modules/entity_broadcast_audit.md",
@@ -144,7 +144,7 @@
     },
     {
       "path": "services/backend/modules/geometadata.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/modules/geometry_cutting.md",
@@ -160,7 +160,15 @@
     },
     {
       "path": "services/backend/modules/auth_invites.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
+    },
+    {
+      "path": "services/backend/modules/auth_diag.md",
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
+    },
+    {
+      "path": "services/backend/modules/logo_normalisation.md",
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/flows/entity_creation.md",
@@ -176,7 +184,7 @@
     },
     {
       "path": "services/backend/flows/clash_detect_and_resolve.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/flows/planning_cycle_lifecycle.md",
@@ -208,19 +216,19 @@
     },
     {
       "path": "services/backend/flows/invite_accept_flow.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "infra/data-stores.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "infra/network.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "external/keycloak/index.md",
-      "last_verified_commit": "9b0d86029a07dc6995ab5dc9f883ef48d6346f9b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "external/postgis/index.md",
@@ -284,7 +292,7 @@
     },
     {
       "path": "services/backend/modules/contractor_service.md",
-      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/modules/shift_service.md",
@@ -304,7 +312,7 @@
     },
     {
       "path": "services/backend/modules/clash_cache.md",
-      "last_verified_commit": "f9606469ce367229c5c91e03c3ba917779015030"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/modules/clash_resolution_service.md",
@@ -324,7 +332,7 @@
     },
     {
       "path": "services/backend/modules/config.md",
-      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/backend/modules/jwks.md",
@@ -356,7 +364,11 @@
     },
     {
       "path": "services/ui/modules/auth.md",
-      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
+    },
+    {
+      "path": "services/ui/modules/audit-ghost.md",
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/ui/modules/dashboard.md",
@@ -428,15 +440,15 @@
     },
     {
       "path": "contracts/ui-backend/http-contract.md",
-      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "contracts/ui-backend/websocket-contract.md",
-      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "contracts/ui-backend/auth-contract.md",
-      "last_verified_commit": "cf53fca56d8d8f023b3d434223b7a050c61b918b"
+      "last_verified_commit": "c56ee3d5e04d0143a312d17b22ca262eaa150bd2"
     },
     {
       "path": "services/ui/flows/login-to-dashboard.md",

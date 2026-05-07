@@ -26,6 +26,7 @@ See [topology.md](topology.md) for runtime boundaries and data flow.
 - [Infra](infra/) — data stores, network, compute
 - [Ops](ops/) — runbooks keyed on symptoms
 - [Build](build.md) — CI/CD
+- [Analyses](analyses/index.md) — explorations and investigations
 
 ## Reference
 

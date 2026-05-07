@@ -45,6 +45,8 @@ WebSocket `entity_created` or `entity_updated` event, or HTTP POST to
 
 - PostGIS reads (rules, entities, features, resolutions)
 - In-memory cache write (`ClashCache._cache`)
+- Per-key compute coalescing via `_compute_locks` prevents duplicate concurrent computations
+- 15s `asyncio.wait_for` timeout on `GET /api/clashes`; returns 504 on exceed
 - WebSocket broadcast to `site:{site_id}` room (via `websocket_runtime` → `redis_core` relay)
 - Audit log entry for manual rule evaluations
 - `clash_resolution` table INSERT/UPDATE when resolving/unresolving clashes
@@ -58,4 +60,6 @@ WebSocket `entity_created` or `entity_updated` event, or HTTP POST to
 | Cache stale | Generation mismatch on read | Recompute from scratch |
 | Debounce timer cancelled | New mutation within 0.5 s | Timer resets; only last mutation triggers compute |
 | Recompute failure | Exception in `_debounced_recompute` | Logged; pending task reference cleaned up; clashes remain stale |
+| Compute timeout | `asyncio.TimeoutError` on >15s computation | Returns 504 Gateway Timeout; connection returned to pool cleanly via session rollback shielding |
+| Cache miss (key) | `_compute_locks` coalescing miss | Subsequent request finds stale entry and triggers recomputation |
 | Resolution not found | `unresolve_clash` miss | Returns `UnresolveResult(deleted=False)` |

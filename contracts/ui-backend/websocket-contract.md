@@ -71,7 +71,7 @@ Entity types: `worker`, `plant`, `zone`, `feature`, `delivery`, `poi`, `text_lab
 
 | Event | Payload | Frontend handler |
 |-------|---------|------------------|
-| `clash_results_updated` | `{ event, site_id, clashes, legacy_clashes, clash_rule_results, entity_severity, seq? }` | `ClashStateService` |
+| `clash_results_updated` | `{ event, site_id, clashes, legacy_clashes, clash_rule_results, entity_severity, seq? }` | `ClashStateService` — dual-shape payload during ADR D1 deprecation window; `entity_severity` derived from unresolved clashes only |
 
 ### Planning lifecycle
 
@@ -91,6 +91,7 @@ Entity types: `worker`, `plant`, `zone`, `feature`, `delivery`, `poi`, `text_lab
 | `config_changed` | `{ event, domain, op, record_id, data, audience?, seq? }` |
 
 Domains: `contractor`, `shift`, `label_style`, `smart_group`, `site_map`, `clash_rule`, `rule_profile`, `clash_resolution`, `report_session`, `scene_decision`, `membership`, `invite`, `invite_link`
+- `contractor:updated` now triggers contractor logo sync on the frontend (re-register MapLibre images, mark beacons/delivery pins dirty)
 
 ### Context invalidation
 

@@ -20,28 +20,31 @@ touches:
 external:
   - angular-auth-oidc-client
   - Keycloak
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
 Wraps `angular-auth-oidc-client` for Keycloak OIDC login/logout and token lifecycle, manages the current user's profile and site-level permissions, and hosts the login, invite-join, and site-selection pages.
 
 ## Interface
-- `auth.service.ts::AuthService` — Injectable root service wrapping `OidcSecurityService`. Exposes `token`, `isAuthenticated()`, `isAuthenticated$()`, `isTestMode`, `isLoggingOut`, `login()`, `logout()`, `refreshToken()`, and `checkAuthOnInit()`. Supports Playwright test-token injection via `window.__SIMOOPS_TEST_TOKEN__`.
+- `auth.service.ts::AuthService` — Injectable root service wrapping `OidcSecurityService`. Exposes `token`, `isAuthenticated()`, `isAuthenticated$()`, `isTestMode`, `isLoggingOut`, `login()`, `logout()`, `refreshToken()`, and `checkAuthOnInit()`. Supports Playwright test-token injection via `window.__SIMOOPS_TEST_TOKEN__`. Integrated with `decodeJwtClaims` and `logAuthDiag` for diagnostic logging.
+- `utils/auth-diag.ts::decodeJwtClaims(token)` → `JwtClaims | null` — extracts `sub`, `email`, `iss`, `exp` from JWT without signature verification; drops all other claims
+- `utils/auth-diag.ts::logAuthDiag(tag, data, level)` — emits `[AUTH-DIAG]` to console AND fire-and-forget POSTs to `/api/diag/auth-event` with `keepalive: true`
 - `services/user.service.ts::UserService` — Injectable root service that fetches the user profile from `/api/auth/me`, handles pending invite acceptance post-login, and provides synchronous role/permission checks (`isAdmin`, `isCoordinatorOrAbove`, `isMember`, `canEditBuildings`, `canEditPlantEntity`, etc.).
 - `login/login.component.ts::LoginComponent` — Standalone page component with a "Sign in" button that triggers `AuthService.login()`. Auto-redirects authenticated users to `/sites`.
 - `join/join.component.ts::JoinComponent` — Standalone invite-link landing page. Validates the invite token, supports registration for new users, sign-in-and-join for existing users, and direct join when already authenticated. Stores pending invite state in `localStorage` for post-OIDC acceptance.
-- `site-selection/site-selection.component.ts::SiteSelectionComponent` — Standalone page that displays authorized sites in a carousel with map thumbnails and keyboard navigation. Auto-selects a single site; otherwise lets the user pick and persists the choice via `SiteContextService`.
+- `site-selection/site-selection.component.ts::SiteSelectionComponent` — Standalone page that displays authorized sites in a carousel with map thumbnails and keyboard navigation. Auto-selects a single site; otherwise lets the user pick and persists the choice via `SiteContextService`. Pre-focuses carousel on last-visited site.
 
 ## State
-- `auth.service.ts::AuthService` maintains `_token` (`string | null`), `_initialized` (`boolean`), `_loggingOut` (`boolean`), and `_testMode` (`boolean`).
+- `auth.service.ts::AuthService` maintains `_token` (`string | null`), `_initialized` (`boolean`), `_loggingOut` (`boolean`), `_testMode` (`boolean`), and `_lastDiagSub` (`string | null` for identity-flip detection).
 - `services/user.service.ts::UserService` maintains `_currentUser` (`BehaviorSubject<UserProfile | null>`), `_loading` (`BehaviorSubject<boolean>`), `_error` (`BehaviorSubject<string | null>`), `_activeSiteId` (`BehaviorSubject<string | null>`), and `_initialized` (`boolean`).
 - `site-selection/site-selection.component.ts::SiteSelectionComponent` tracks `sites`, `focusedIndex`, `thumbnailFailed` (`Set<string>`), and `containerWidth` for carousel layout.
 - Invariants:
-  - `_testMode === true` ⟂ `AuthService` never touches the OIDC library (`checkAuthOnInit` short-circuits, `refreshToken` returns `of(null)`).
-  - `_loggingOut === true` ⟂ repeated `logout()` calls are no-ops.
-  - `!_initialized` in `UserService` → `isCoordinatorOrAbove()` returns `false` (deny-until-verified).
-  - `activeMembership` is derived from `_currentUser` and `_activeSiteId` → stale if site changes without calling `setActiveSite()`.
+- `_testMode === true` ⟂ `AuthService` never touches the OIDC library (`checkAuthOnInit` short-circuits, `refreshToken` returns `of(null)`).
+- `_loggingOut === true` ⟂ repeated `logout()` calls are no-ops.
+- `!_initialized` in `UserService` → `isCoordinatorOrAbove()` returns `false` (deny-until-verified).
+- `activeMembership` is derived from `_currentUser` and `_activeSiteId` → stale if site changes without calling `setActiveSite()`.
+- Identity-flip detection: `isAuthenticated$` subscription compares `sub` on silent renew; mismatch logs `[AUTH-DIAG] !! identity flipped` at warn level
 
 ## Internals
 `AuthService` constructor reads `window.__SIMOOPS_TEST_TOKEN__` once. If present, it skips OIDC entirely, stores the token in `_token`, and defers `userService.fetchCurrentUser()` via `setTimeout` to break a construction-time circular dependency with the HTTP interceptor. OIDC initialization is deliberately deferred to `checkAuthOnInit()` (called by the auth guard) for the same reason.

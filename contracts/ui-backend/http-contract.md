@@ -31,6 +31,7 @@ Maps every frontend API service method to its backend HTTP endpoint handler.
 | `AuthApi.validateInviteLink()` | GET `/api/invite-links/validate/{token}` | `invite_links.py::validate_invite_link` |
 | `AuthApi.acceptInviteLink()` | POST `/api/invite-links/accept/{token}` | `invite_links.py::accept_invite_link` |
 | `AuthApi.registerViaInviteLink()` | POST `/api/invite-links/register/{token}` | `invite_links.py::register_via_invite_link` |
+| `AuthApi.postAuthDiagEvent()` | POST `/api/diag/auth-event` | `diag.py::post_auth_event` |
 | `AuthApi.listPendingMembers()` | GET `/api/memberships/sites/{siteId}/pending` | `memberships.py::list_pending_members` |
 | `AuthApi.approveMember()` | POST `/api/memberships/{membershipId}/approve` | `memberships.py::approve_member` |
 | `AuthApi.rejectMember()` | DELETE `/api/memberships/{membershipId}` | `memberships.py::reject_member` |
@@ -41,7 +42,7 @@ Maps every frontend API service method to its backend HTTP endpoint handler.
 |---|---|---|
 | `SiteApi.listSites()` | GET `/api/sites/` | `sites.py::list_sites` |
 | `SiteApi.listSitesPublic()` | GET `/api/sites/public` | `sites.py::list_sites_public` |
-| `SiteApi.updateSite()` | PATCH `/api/sites/{siteId}` | `sites.py::update_site` |
+| `SiteApi.updateSite()` | PATCH `/api/sites/{siteId}` | `sites.py::update_site` — `site_settings` (admin) for planning toggles, `site_settings_basic` (coordinator+) for other fields |
 | `SiteApi.setDataLock()` | POST `/api/sites/{siteId}/lock` | `sites.py::set_data_lock` |
 | `SiteApi.nukeSiteData()` | DELETE `/api/sites/{siteId}/nuke` | `sites.py::nuke_site_data` |
 | `SiteApi.listShifts()` | GET `/api/shifts/` | `shifts.py::list_shifts` |
@@ -51,6 +52,9 @@ Maps every frontend API service method to its backend HTTP endpoint handler.
 | `SiteApi.createContractor()` | POST `/api/contractors/` | `contractors.py::create_contractor` |
 | `SiteApi.updateContractor()` | PATCH `/api/contractors/{contractorId}` | `contractors.py::update_contractor` |
 | `SiteApi.deleteContractor()` | DELETE `/api/contractors/{contractorId}` | `contractors.py::delete_contractor` |
+| `SiteApi.uploadContractorLogo()` | PUT `/api/contractors/{contractorId}/logo` | `contractors.py::upload_logo` |
+| `SiteApi.deleteContractorLogo()` | DELETE `/api/contractors/{contractorId}/logo` | `contractors.py::delete_logo` |
+| `SiteApi.getContractorLogoImage()` | GET `/api/contractors/{contractorId}/logo/image` | `contractors.py::get_logo_image` — public, no auth, Cache-Control 5min |
 | `SiteApi.listContractorsPublic()` | GET `/api/contractors/public` | `contractors.py::list_contractors_public` |
 | `SiteApi.uploadSiteMap()` | POST `/api/site-maps/upload` | `site_maps.py::upload_site_map` |
 | `SiteApi.uploadSiteMapWithProgress()` | POST `/api/site-maps/upload?site_id={siteId}` | `site_maps.py::upload_site_map` *(multipart/progress)* |
@@ -317,7 +321,8 @@ Maps every frontend API service method to its backend HTTP endpoint handler.
 
 | method | endpoint | backend handler |
 |---|---|---|
-| `ClashApi.listClashes()` | GET `/api/clashes` | `clashes.py::list_clashes` |
+| `ClashApi.listClashes()` | GET `/api/clashes` | `clashes.py::list_clashes` — 15s timeout → 504 |
+| `ClashApi.listClashesAtTime()` | GET `/api/clashes/at-time` | `clashes.py::list_clashes_at_time` — optional `?involving=<kind>/<uuid>` filter |
 | `ClashApi.resolveClash()` | POST `/api/clashes/resolve` | `clashes.py::resolve_clash_endpoint` |
 | `ClashApi.resolveClashBulk()` | POST `/api/clashes/resolve-bulk` | `clashes.py::resolve_bulk_clashes_endpoint` |
 | `ClashApi.unresolveClash()` | POST `/api/clashes/unresolve` | `clashes.py::unresolve_clash_endpoint` |

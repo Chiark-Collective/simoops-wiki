@@ -28,7 +28,7 @@ touches:
   - HTTP
   - WebSocket
 external: []
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -53,8 +53,8 @@ Manages the current working site context and all site-level administration: cont
 - `services/smart-group-sync-binding.service.ts::SmartGroupSyncBinding` — registers `smart_group` domain handler → `SmartGroupService.wsApplySmartGroup*`.
 - `services/site-map-sync-binding.service.ts::SiteMapSyncBinding` — registers `site_map` domain handler → `SiteContextService.wsApplySiteMap*`.
 - `services/label-style-sync-binding.service.ts::LabelStyleSyncBinding` — registers `label_style` domain handler → `LabelStyleService.wsApplyStyles`.
-- `dashboard/site-settings-host/` — `SiteSettingsHostComponent`: modal event wiring, shift/contractor/invite CRUD, site visibility/elevation/planning updates.
-- `dashboard/panels/contractor-panel/` — `ContractorPanelComponent`: per-contractor visibility toggles, search, counts.
+- `dashboard/site-settings-host/` — `SiteSettingsHostComponent`: modal event wiring, shift/contractor/invite CRUD, site visibility/elevation/planning updates. Contractor logo upload/replace/remove in settings tab.
+- `dashboard/panels/contractor-panel/` — `ContractorPanelComponent`: per-contractor visibility toggles, search, counts, colour swatches.
 - `dashboard/panels/layers-panel/` — `LayersPanelComponent`: layer visibility toggles and counts by entity type.
 - `types/smart-group.types.ts` — `SmartGroup`, `SmartGroupQuery`, `SmartGroupCreatePayload`, `SmartGroupEvaluationResult`, `AggregateStatistics`.
 
@@ -69,7 +69,7 @@ Manages the current working site context and all site-level administration: cont
 - `ContractorVisibilityService` maintains `_hiddenContractorIds`, `_cachedContractorCounts`, `_colorMap`. `_hiddenContractorIds` resets to empty `Set` on site change.
 
 ## Internals
-- Site context restoration: `tryRestoreSite` reads `localStorage` key `simoops_last_site_id` → matches against loaded `_sites` → calls `selectSite`. `getLastSelectedSiteId` is for UI pre-focus only.
+- Site context restoration: `tryRestoreSite` reads `localStorage` key `simoops_last_site_id` as `StoredLastSite` `{ userSub, siteId }` → identity-matches against current Keycloak `sub` → calls `selectSite`. Mismatch clears stale entry and logs `[AUTH-DIAG] last-site skip-identity-mismatch`. `getLastSelectedSiteId` is for UI pre-focus only.
 - Working context emission: `combineLatest([_selectedSite, temporalContext.selectedShift$, temporalContext.selectedDate$, _selectedSiteMap])` → `map` to `WorkingContext | null` when site and shift exist. `distinctUntilChanged` compares site id, shift id, date, and site map id.
 - Site selection cascade: `selectSite(site)` → `_selectedSite.next(site)` → `timezone.setSiteTz` → `temporalContext.setSelectedShift(null)` → reset shifts/contractors/maps → `UserService.setActiveSite` → `localStorage.setItem` → `temporalContext.setSelectedDate(siteToday)` → `loadShifts`, `loadContractors`, `loadSiteMaps`.
 - Shift auto-selection: `loadShifts` finds the shift covering current site-local minutes (handles overnight shifts where `startMinutes >= endMinutes`). If no match, selects `shifts[0]`.
@@ -92,5 +92,6 @@ Manages the current working site context and all site-level administration: cont
 - `InviteService.wsApplyInviteDeleted` flips status to `revoked` rather than removing the row because the backend soft-deletes invites.
 - `SmartGroupService.wsApplySmartGroupUpdated` treats an update for an unknown row as a create — this handles the sharing-transition case where a non-owner client did not previously have the group.
 - `SiteSettingsHostComponent` uses `OnPush` and calls `cdr.markForCheck()` on invite/pending-member/link changes because the template reads synchronous getters, not async pipes.
+- Contractor logo management: `settings-contractors-tab.component.ts` shows logo thumbnails with upload/replace/remove buttons gated by `canManage()`
 - `SiteScheduleService.prepareSaveSiteConfig` returns only new shifts (those without IDs). The caller must persist each via API and then call `addShiftToConfig` to inject the returned ID into the cache; until then the timeline lacks that shift.
 - `LayerDefaultsService.loadForSite` is a no-op if `currentSiteId === siteId` and defaults are already cached; force a refresh by calling `clear()` first.

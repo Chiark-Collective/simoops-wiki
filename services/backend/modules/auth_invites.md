@@ -5,7 +5,7 @@ paths: [backend/app/services/auth/invite_service.py, backend/app/services/auth/i
 flows: [invite_accept_flow]
 touches: [infra/data-stores]
 external: [keycloak]
-last_verified_commit: 9b0d86029a07dc6995ab5dc9f883ef48d6346f9b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -58,10 +58,12 @@ Keycloak Admin API.
   `SiteMembership` in one transaction
 - `use_count` incremented via `sa_update` atomic expression to avoid lost writes
   under concurrent acceptance
-- Viewer and client invite links are auto-verified; other roles require
-  coordinator approval
+- Viewer, client, and member invite links are auto-verified; coordinator and admin roles require coordinator approval
 - Client links are cross-contractor by design — `contractor_id` is always None
+- `accept_link` calls `ws_manager.invalidate_user_context` after commit when a membership changes from unverified → verified, or when a new auto-verified membership is created
+- `accept_pending_invites` collects `invalidate_site_ids` for newly created memberships and calls `ws_manager.invalidate_user_context` after commit
 - `broadcast_config_event` emitted on new membership creation in `accept_link`
+- WS `context_invalidated` broadcast sent after membership creation in `accept_link` and `accept_pending_invites` to refresh cached auth state
 
 ## Touches
 | resource | how | why |

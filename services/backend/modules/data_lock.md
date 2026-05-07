@@ -5,7 +5,7 @@ paths: [backend/app/core/data_lock.py]
 flows: []
 touches: []
 external: []
-last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -22,6 +22,7 @@ before the site's lock boundary.
 - All-day entities (`end_at is None`) are never locked
 - If `lock_boundary` is None, nothing is locked
 - Admin/superadmin bypass evaluated before lock check in `require_not_locked`
+- Migration 097 closes orphan feature versions (`valid_to = valid_from`) — zero-duration phantoms caused by legacy data migrations without matching feature rows; fixes `at_time` queries returning stale zone entries
 - `site` is forward-referenced (`"Site"`) with `noqa: F821` to avoid circular import between `app.core` and `app.models`
 - `site` is duck-typed at runtime; passing an object without `data_locked_before` raises `AttributeError`
 

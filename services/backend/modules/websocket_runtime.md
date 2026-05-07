@@ -5,7 +5,7 @@ paths: [backend/app/core/websocket_manager.py, backend/app/core/presence_manager
 flows: []
 touches: [infra/data-stores]
 external: [redis]
-last_verified_commit: 9b0d86029a07dc6995ab5dc9f883ef48d6346f9b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -75,6 +75,7 @@ Invariants:
 - `broadcast_ephemeral` is local-only, no sequence number, no event log, drops silently above ~15 events/sec per `(connection, entity)`
 - `invalidate_subscription_context` broadcasts `context_invalidated` to force clients to re-subscribe and refresh cached permissions
 - `invalidate_user_context` sends user-scoped `context_invalidated`; must be called once per site for User-level mutations because there is no global per-user channel
+- Called from `invite_link_service.accept_link` after auto-verified membership creation and from `invite_service.accept_pending_invites` after new membership creation
 - `close_idle_connections` uses close code 1001 and sweeps stale presence
 - Redis presence errors are logged and swallowed; in-memory state remains authoritative
 

@@ -18,7 +18,7 @@ touches:
   - MapLibre GL
   - DOM
 external: []
-last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -28,8 +28,8 @@ Hosts the MapLibre GL map, wires pointer/keyboard interactions, manages GeoJSON 
 - `map/map.component.ts::MapComponent` — `@Component` selector `app-map`; initialises map, orchestrates helpers, exposes `@Output() mapReady`.
 - `map/map-event-wiring.ts::MapEventWiring` — Binds all MapLibre event listeners via the `MapEventWiringHost` interface.
 - `map/map-source-manager.ts::MapSourceManager` — Per-domain GeoJSON source updates. Delegates to `RecreatableMapSource` for sources that need recreation on empty→populated transitions.
-- `map/map-source-utils.ts::RecreatableMapSource` — Wrapper around a GeoJSON source that recreates source+layers on the first empty→populated transition, then replays logged layout/paint changes on the new layer instances.
-- `map/map-subscription-orchestrator.ts::MapSubscriptionOrchestrator` — Centralises RxJS subscriptions for selection, display config, entity data, label styles, creation mode, vertex ops, presence viewports, and alerts.
+- `map/map-source-utils.ts::RecreatableMapSource` — Typed wrapper around a GeoJSON source that recreates source+layers on the first empty→populated transition, then replays logged `setFilter`/`setFeatureState`/`setLayoutProperty`/`setPaintProperty` calls. Caps replay log at 10,000 entries with 5,000 warning threshold.
+- `map/map-subscription-orchestrator.ts::MapSubscriptionOrchestrator` — Centralises RxJS subscriptions for selection, display config, entity data, label styles, creation mode, vertex ops, presence viewports, alerts, and contractor logo sync.
 - `map/map-bounds.ts::computeOverrideEntityBounds` — Pure helper building `LngLatBounds` from override collections.
 - `map/map-bounds.ts::computeOverrideEntityCacheKey` — Stable cache key for the auto-fit retry loop.
 - `map/map-building-focus-coordinator.ts::MapBuildingFocusCoordinator` — Owns selected building, focused floor, and hovered building state; drives map paint updates and synchronous repaints. Delegates floor visibility decisions to `computeFloorDisplayDecision`.
@@ -71,6 +71,7 @@ Hosts the MapLibre GL map, wires pointer/keyboard interactions, manages GeoJSON 
 ## Internals
 ### MapLibre initialisation
 `map/map.component.ts::ngAfterViewInit` → `initMap`. If `hasMapSource()` is true, constructs `maplibregl.Map` inside `ngZone.runOutsideAngular` to avoid per-frame change detection. Style contains a raster source (COG tilejson or XYZ) and a background layer. Navigation controls added. On `map.on('load')`, `addSourcesAndLayers` registers MVT / GeoJSON sources, patterns, icons, and ordered layers. Controllers instantiated. `mapReady` emitted.
+- `map/map-source-utils.ts::mapEventSignal<T>()` — Bridges MapLibre events into Angular signals, solving outside-zone `markForCheck` timing issues.
 
 ### Event wiring lifecycle
 `map/map-event-wiring.ts::bindAll` called once inside the load handler (gated by `!passiveMirrorMode`). Registers click, mousedown, mouseup, mousemove, dblclick, and contextmenu handlers on specific layers. Hit detection uses `queryRenderedFeatures` with explicit layer lists. Right-click drag distance >5px suppresses context menu and triggers rotation. Area double-click finish checks pixel distance ≤5px to avoid mistaking rapid vertex placement for an intentional double-click.
@@ -86,6 +87,9 @@ Hosts the MapLibre GL map, wires pointer/keyboard interactions, manages GeoJSON 
 
 ### RecreatableMapSource abstraction
 `map/map-source-utils.ts::RecreatableMapSource` wraps a GeoJSON source and its dependent layers. On the first empty→populated transition it removes and re-adds the source (working around the Zone.js/MapLibre symbol-layer bug), then replays a logged queue of layout and paint changes so dynamic filters and sizing expressions survive recreation. `MapSourceManager` caches one instance per source ID via `getSource(sourceId, layerIds)`.
+- Replay log capped at 10,000 entries; warns at 5,000 to catch pathological hot loops
+- Tracks `setFilter`, `setFeatureState`, `setLayoutProperty`, `setPaintProperty` calls and replays after recreation
+- `mapEventSignal<T>()` bridges MapLibre events into Angular signals with automatic cleanup via `DestroyRef`
 
 ### Building focus coordination
 `MapBuildingFocusCoordinator` subscribes to `BuildingFocusService.hoveredBuilding$` and fans out to dirty flags + change detection. `setFocus` triggers `updateBuildingHighlight`, `updateRasterDimming`, and synchronous repaints of beacons, geometadata, and badges. Floor visibility decisions are delegated to `computeFloorDisplayDecision` from `utils/building-visibility-policy.ts`, which receives `revisionModeActive` from the host. When revision mode is active and no floor focus exists, indoor entities surface at full opacity regardless of `indoorMode`; an active floor focus still dims off-floor entities.

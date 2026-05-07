@@ -11,7 +11,7 @@ flows:
   - services/backend/flows/entity_update.md
 touches: []
 external: []
-last_verified_commit: 9b0d86029a07dc6995ab5dc9f883ef48d6346f9b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -42,6 +42,7 @@ schedule helpers are parameterised so the same orchestration works across types.
 - `area_copy_service.py::AreaCopyService.copy_areas_from_range(user, payload)` → AreaCopyResponse
 
 ## Internals
+- `_require_contractor_access` called during `create_entity` (was only on update/delete); members may only create entities tagged with their own `contractor_id`
 - Abstract hooks: `_build_entity`, `_apply_updates`, `_entity_to_read`, `_clone_entity_for_schedule`, `_get_field_groups`
 - `_check_optimistic_concurrency` implements field-level OCC using `expected_updated_at` and `last_modified_fields`
 - `_get_field_groups` maps raw DB fields to semantic groups (e.g. `position_m` + `position_wgs84` → `position`)

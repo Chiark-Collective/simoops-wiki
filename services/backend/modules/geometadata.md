@@ -17,7 +17,7 @@ touches:
   - WebSocket
   - Clash cache
 external: []
-last_verified_commit: 9b0d86029a07dc6995ab5dc9f883ef48d6346f9b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -67,6 +67,7 @@ Manages geometadata features and layers: CRUD, bulk GeoJSON/Shapefile import, op
 - `feature_broadcast.py::invalidate_clash_cache`
 
 ## Internals
+- `_require_contractor_access` now called for ALL feature types carrying a `contractor_id`, not just `CONTRACTOR_REQUIRED_TYPES` (zone, exclusion, road); previously members could create features with arbitrary `contractor_id` for non-required types
 - `FeatureCrudService.create_zone_feature` validates polygon/line geometry via `geometry.py` helpers and auto-sets `clashable` from feature type.
 - `update_feature` implements optimistic concurrency with `expected_updated_at`; overlapping semantic field groups raise 409, non-overlapping changes auto-merge.
 - `delete_feature` tombstones planned features (`plan_state='planned'`) via `tombstoned_at`; baseline/actual features are hard-deleted.

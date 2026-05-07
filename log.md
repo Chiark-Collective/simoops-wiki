@@ -30,9 +30,16 @@ Source of truth for tracked sources: [manifest.json](manifest.json)
 | 2026-05-02 | cf53fca | Frontend flows: 12 user journey flows documented via parallel subagents | 12 flow pages + index updates |
 | 2026-05-02 | cf53fca | Cross-service end-to-end flows: 6 flows bridging frontend and backend | 6 cross-service flow pages + index updates |
 | 2026-05-03 | f9606469 | Gotcha remediation ingest: cf53fca→f9606469 (38 commits, ~100 files). G3/G4 small fixes, G5 architectural cleanups, G7-G11 design-flag clusters, G12 auth observability. | 25 module updates + 6 new pages + gotchas reconciliation + glossary + indexes + shared files |
+| 2026-05-07 | c56ee3d5 | Backend ingest: f9606469→c56ee3d5 (32 commits, 144 files). Auth diagnostics, contractor logo/branding, clash timeout+coalescing, RBAC split (site_settings_basic), WS invalidation on invite accept, health configurable thresholds, orphan feature versions migration. | 2 new modules + 14 updated backend pages + manifest + log |
+| 2026-05-07 | c56ee3d5 | Frontend ingest: f9606469→c56ee3d5. Audit ghost hover preview, map source hardening (RecreatableMapSource caps), contractor branding on map (logos, POI pins, delivery pins, building badges), auth-diag integration, identity-scope last-site, 3-tab revision picker, delivery EntityStore refactor, clash debounce 1000ms. | 1 new module + 10 updated frontend pages + manifest + log |
+| 2026-05-07 | c56ee3d5 | Cross-cutting ingest: f9606469→c56ee3d5. HTTP contract (diag, contractor logo, clash timeout, site PATCH), WebSocket contract (contractor:updated, entity_severity), auth contract (auth-diag), Keycloak branded theme + persistent data, Caddy static asset routes, glossary terms, gotchas (9 new entries). | 8 updated cross-cutting pages + manifest + log |
+| 2026-05-07 | c56ee3d5 | Deployment documentation: Makefile targets, Docker Compose dev/prod, Netcup VPS, ngrok, backup/restore runbook | infra/compute.md, build.md, ops/backup-restore.md, infra/index.md, ops/index.md, gotchas.md |
+| 2026-05-07 | c56ee3d5 | Production OOM investigation: dmesg analysis, docker stats, verified claims against docker-compose.prod.yml and backend/Dockerfile | analyses/oom-kill-cascade.md, index.md, gotchas.md, infra/compute.md, log.md |
 
 ## Next ingest targets
 
 - Cross-service end-to-end flows complete — 6 flows bridging frontend and backend
-- `ops/` runbooks for production incidents
+- `ops/` runbooks for production incidents — backup/restore added
 - `analyses/` for architectural decisions and explorations
+- `infra/secrets.md` — environment variable management at infra level
+- `infra/observability.md` — monitoring and alerting

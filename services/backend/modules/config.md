@@ -5,7 +5,7 @@ paths: [backend/app/core/config.py]
 flows: []
 touches: [infra/data-stores]
 external: [keycloak]
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -42,6 +42,8 @@ Invariants:
 - `database_async_url` string-replaces `+psycopg://` with `+psycopg_async://`
 - `run_migrations` is guarded by `SIMOOPS_RUN_MIGRATIONS=true`; uses PostgreSQL advisory lock with `migration_lock_timeout_seconds`
 - `require_redis=true` causes `/health/ready` to return 503 when Redis is unconfigured; prevents silent divergence in multi-worker deploys
+- `health_pending_deletes_threshold` — Pending S3-delete backlog at which readiness probe flips to 503 (default 1000)
+- `health_redis_drops_threshold` — Cumulative Redis pub/sub broadcast drops that trigger 503 (default 0, observe-only)
 
 ## Touches
 | resource | how | why |

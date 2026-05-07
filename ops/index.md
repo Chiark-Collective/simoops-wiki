@@ -7,5 +7,4 @@ Runbooks keyed on symptoms.
 
 | Symptom | Related |
 |---|---|
-
-*(No runbooks documented yet.)*
+| [Data loss or recovery required](backup-restore.md) | compute, data-stores, postgis |

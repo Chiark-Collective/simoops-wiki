@@ -73,9 +73,15 @@
 | JWKS cache | In-memory cache of Keycloak public keys; stale on prolonged outage. |
 | Presigned URL | Time-limited S3 URL for direct client upload/download without proxying through the backend. |
 | SyncCoordinator | Generic per-entity-kind helper owning optimistic snapshots, 409 rollback, WS dedup, and tombstones. Composed inside domain services. |
-| RecreatableMapSource | Typed MapLibre GeoJSON source wrapper that recreates on first empty→populated transition and replays filter/layout/paint/feature-state across recreations. |
+| RecreatableMapSource | Typed MapLibre GeoJSON source wrapper that recreates on first empty→populated transition and replays filter/layout/paint/feature-state across recreations. Replay log capped at 10,000 entries. |
 | ViewModeService | Canonical source of dashboard view state (`editing_plan`, `editing_actual`, `viewing_submitted`, `compare`, `revision`). Replaces fragmented flags across `RevisionModeService` and `PlanningCycleService`. |
 | ViewState | Discriminated union of five dashboard modes owned by `ViewModeService`. |
 | PendingStorageDelete | Persistent retry queue row for failed S3 deletions; swept every 60s with exponential backoff capped at 24h. |
 | BuildingVisibilityPolicy | Computes floor-based opacity and indicators for indoor entities, with `revisionModeActive` override for revision-mode UX. |
+| Auth-diag | Frontend `[AUTH-DIAG]` event stream mirrored to backend logs via unauthenticated `POST /api/diag/auth-event`. Used to debug intermittent auth-flow issues in production. |
+| Logo normalisation | Pure-function module converting uploaded contractor logos to 512×512 RGBA PNG (rasters) or passthrough SVG with script rejection. |
+| Entity severity | Per-entity worst-case clash severity (`green`/`amber`/`red`) derived from unresolved clashes only. Broadcast alongside clash results. |
+| Site settings basic | Coordinator-grade permission (`site.settings.basic`) for non-planning site fields: cross-contractor visibility, elevation grace, same-contractor exemptions, report footer text. |
+| Audit ghost | Transient slate-coloured map overlay showing an entity at a past audit revision plus its clash partners. Driven by `AuditGhostService` + `MapAuditGhostController`. |
+| Identity-scope last-site | `SiteContextService` persists `{ userSub, siteId }` in localStorage so site restoration is scoped to the Keycloak identity, preventing cross-account inheritance on silent renew flips. |
 | Topological sort | `graphlib.TopologicalSorter` used to derive report provider run order from declared `requires`/`provides` dependencies. |

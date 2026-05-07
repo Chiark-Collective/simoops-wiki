@@ -39,7 +39,7 @@ external:
   - angular/core
   - angular/common/http
   - rxjs
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -70,6 +70,7 @@ Centralised reactive state and API layer for spatial entities. `EntityStore` pro
 - `types/entity.types.ts::DomainEntity` — Union `Worker | Plant | Area`.
 - `types/entity-kind.ts::DomainEntityKind` — Discriminator `'worker' | 'plant' | 'area'`.
 - `services/data-load.service.ts::DataLoadService` — Reactive orchestrator for entity reloads: tokens, plants, areas, roads, deliveries, POIs, alerts, text labels, geometadata, and planning cycle data.
+- `services/delivery.service.ts::DeliveryService` — Delivery state backed by `EntityStore<Delivery>` and `SyncCoordinator<Delivery>` for tombstone and pending-create race protection. Provides `visibleDeliveries$` filtered by scrubber time position.
 
 ## State
 `EntityStore` maintains:
@@ -113,6 +114,7 @@ Centralised reactive state and API layer for spatial entities. `EntityStore` pro
 
 ## Gotchas
 - `AreaApi.listAreas` returns `GeometadataFeature[]` mapped to `Area`. The backend uses MultiPolygon; the frontend uses a simple polygon ring. Loss of inner rings is intentional for the current domain.
+- `DeliveryService` uses `SyncCoordinator` for optimistic updates, rollback, and WS dedup — same pattern as `EntityService` for tokens/plants/areas
 - `EntityService.clear()` resets `_deletedTokenIds`, `_pendingOptimistic`, and `_optimisticSnapshots`. Clearing stores without calling `entityService.clear()` leaves stale tombstones and optimistic flags.
 - `DataLoadService` resolves `PlanningCycleService` lazily through the `Injector` to avoid a circular bootstrap with `DataLoadService`.
 - `forceRefreshEntities` is a no-op while `revisionMode.enabled`. Exiting revision mode explicitly triggers a refresh to catch up.

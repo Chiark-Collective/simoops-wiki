@@ -14,14 +14,17 @@ channel: http
 | `/api/memberships/` | GET, POST, DELETE | Bearer | Pending approvals |
 | `/api/invites/` | GET, POST, DELETE | Bearer | Email invites |
 | `/api/invite-links/` | GET, POST, DELETE | Bearer / None | Shareable invite links |
+| `/api/diag/auth-event` | POST | None | Telemetry sink for frontend `[AUTH-DIAG]` events |
 
 ## Site & Config
 
 | Prefix | Methods | Auth | Notes |
 |---|---|---|---|
-| `/api/sites/` | GET, POST, PATCH, PUT, DELETE | Bearer / open | Site CRUD, settings, lock |
+| `/api/sites/` | GET, POST, PATCH, PUT, DELETE | Bearer / open | Site CRUD, settings, lock; PATCH uses `site_settings` (admin) for planning toggles or `site_settings_basic` (coordinator+) for other fields |
 | `/api/site-maps/` | GET, POST | Bearer | Map layers |
 | `/api/contractors/` | GET, POST, PATCH, DELETE | Bearer / open | Contractor CRUD |
+| `/api/contractors/{id}/logo` | PUT, DELETE | Bearer | Upload/replace/delete contractor logo |
+| `/api/contractors/{id}/logo/image` | GET | None (public) | Stream logo bytes with 5min Cache-Control |
 | `/api/shifts/` | GET, POST, DELETE | Bearer | Shift scheduling |
 | `/api/sites/{id}/label-styles/` | GET, PUT | Bearer | Text label styles |
 
@@ -42,7 +45,8 @@ channel: http
 | Prefix | Methods | Auth | Notes |
 |---|---|---|---|
 | `/api/planning-cycles/` | GET, POST, PATCH | Bearer | Draft → active → archived |
-| `/api/clashes/` | GET, POST | Bearer | Detect & resolve |
+| `/api/clashes/` | GET, POST | Bearer | Detect & resolve; 15s timeout → 504 |
+| `/api/clashes/at-time` | GET | Bearer | Historical evaluation; `?involving=<kind>/<uuid>` filter |
 | `/api/clash-rules/` | GET, POST, PATCH, DELETE | Bearer | Rule CRUD, DSL, versions |
 | `/api/rule-profiles/` | GET, POST, PATCH, DELETE | Bearer | Profile activation, clone |
 
@@ -76,6 +80,7 @@ channel: http
 | Prefix | Methods | Auth | Notes |
 |---|---|---|---|
 | `/api/health/` | GET | None | Liveness, readiness probes |
+| `/api/health/ready` | GET | None | Readiness: DB, S3, Redis, JWKS; configurable thresholds for pending deletes and Redis drops |
 | `/api/_test/` | GET, POST | None | Test-only; env-gated |
 | `/api/alerts/` | GET, POST, PATCH, DELETE | Bearer | Site alerts |
 

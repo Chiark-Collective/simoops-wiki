@@ -19,7 +19,7 @@ touches:
   - maplibre-gl
   - HTMLCanvasElement
 external: []
-last_verified_commit: cf53fca56d8d8f023b3d434223b7a050c61b918b
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -35,11 +35,12 @@ Defines every MapLibre layer, source, and render-order rule for the SimOops map,
 - `map/map-layer-defs-geometadata.ts::GEOMETADATA_LAYERS` — Fill, outline, label, pulse, and badge layers for buildings, zones, exclusions, laydowns, and work areas.
 - `map/map-layer-defs-entity.ts::ENTITY_LAYERS` — Token, plant, crane, beacon, hidden-marker, selection-glow, compare-ghost, and diff layers.
 - `map/map-layer-defs-road.ts::ROAD_LAYERS` — Saved road casing/fill/centerline and temporary road drawing layers.
-- `map/map-layer-defs-ui.ts::UI_LAYERS` — Measurement, clash, vertex edit, drag feedback, delivery/POI/alert pins, and presence dots.
+- `map/map-layer-defs-ui.ts::UI_LAYERS` — Measurement, clash, vertex edit, drag feedback, delivery/POI/alert pins, presence dots, and audit-ghost clash lines.
 
 ### Source utilities
 - `map/map-source-utils.ts::updateGeoJsonSource` — Safe `getSource` / `setData` wrapper.
 - `map/map-source-utils.ts::updateGeoJsonSourceWithRecreate` — Zone.js/MapLibre recreation workaround on the first empty→populated transition.
+- `map/map-source-utils.ts::RecreatableMapSource` — Typed wrapper with replay log caps (10,000 hard, 5,000 warn) for dynamic state survival across recreation
 - `map/map-source-utils.ts::recreateGeoJsonSource` — Full remove/re-add of a source and its layers.
 - `map/map-source-utils.ts::featureCollection` — Convenience wrapper.
 
@@ -66,6 +67,15 @@ Defines every MapLibre layer, source, and render-order rule for the SimOops map,
 
 ### Layer definition structure
 Definitions are split by domain across four files and merged into `LAYER_DEFINITIONS`. `getLayerOrder()` assembles them into a single `LayerSpecification[]` controlling bottom-to-top render precedence: geometadata polygons → pins/presence → roads → temp drawing UI → drag feedback → selection glow → compare overlay → clash regions → inactive cranes/drop zones/arc handles → worker beacons → hidden markers → labels.
+
+### New layer additions
+- `beacons-plant-contractor-logo` — symbol layer showing contractor logo at plant centres when `contractor_logo_image_id` is set
+- `geometadataContractorLogo` — symbol layer for area contractor logos at polygon centroids (work_area, laydown, exclusion)
+- `audit-ghost-tokens-circle`, `audit-ghost-plants-circle`, `audit-ghost-features-fill`, `audit-ghost-features-outline` — slate-400 semi-transparent dashed ghost layers for audit hover preview
+- `audit-ghost-clash-lines` — dashed connector lines between ghost entities and their clash partners
+- Per-feature-type geometadata fills: `geometadata-exclusion-contractor-fill`, `geometadata-laydown-contractor-fill`, `geometadata-workarea-contractor-fill` using `contractor_fill_color`
+- `delivery-pins` now uses data-driven `icon_image` per contractor colour
+- `entity-labels` format expression with per-section text colours (`entityName` dark, `entityContractor` in contractor colour)
 
 ### Source update patterns
 - `updateGeoJsonSource` is the baseline: `getSource` → `setData`.

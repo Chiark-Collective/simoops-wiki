@@ -23,7 +23,7 @@ touches:
   - browser:localStorage
   - browser:console
 external: []
-last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -37,6 +37,7 @@ Real-time synchronization layer. WebSocket room subscriptions with per-room sequ
 - `services/presence.service.ts::PresenceService` — Presence tracking: local viewport publishing, remote viewport display, user list. Exposes `activeUsers$`, `editingEntities$`, `viewportPositions$`.
 - `services/offline-queue.service.ts::OfflineQueueService` — Queues operations while offline, replays on reconnection. Deduplicates and merges mutations for the same entity. Surfaces 409 OCC conflicts via `conflicts$`. Exposes `status$`. `executeMutation` suppresses WS delta application during in-flight mutations via `EntityService.markInFlight`; 500 errors trigger `rollbackInFlight`.
 - `services/sync-coordinator.ts::SyncCoordinator<T>` — Generic per-entity-kind helper owning optimistic snapshots, pending set, tombstones, and the mutate envelope (success / 409 / non-409 paths). Composed inside `EntityService`, `DeliveryService`, `PoiService`, `TextLabelService`, and `AlertService`. Replaces ad-hoc per-type logic.
+- `services/websocket-event-router.service.ts::WebSocketEventRouterService` — Routes `WebSocketEntityEvent` to domain services using `SyncCoordinator` parity for delivery/POI/text-label/alert WS dedup.
 - `services/data-load.service.ts::DataLoadService` — Centralised data-loading service. Uses `SyncCoordinator`-backed `EntityService` for entity sync and triggers force refreshes after WebSocket catch-up gaps.
 - `services/data-lock.service.ts::DataLockService` — Data lock acquisition and release for optimistic concurrency. Reactive `isLockActive$`, `lockBoundary$`, `isViewingLockedTime$`. Admins bypass lock.
 - `services/undo.service.ts::UndoService` — Undo/redo stack for entity operations. Max depth 50. Exposes `state$`. Handles stale marking and data-lock awareness.
@@ -71,7 +72,7 @@ Invariants:
 - Catch-up protocol: on reconnect, resubscribe all `currentRooms`, then send `catch_up` with `last_seq`. Response replayed events are deduplicated against `pendingCatchUpSnapshot` and `liveSeqsDuringCatchUp`. If server returns `full_reload_required`, emit `fullReloadRequired$`.
 - Out-of-order protection: messages with `seq <= lastReceivedSeq` are discarded before routing.
 - Entity event batching: rapid consecutive messages collected into `pendingEntityEvents`, flushed in a single `queueMicrotask`. Non-entity messages bypass the buffer.
-- Event routing table: `worker` → `EntityService` token ops; `plant` → `EntityService` plant ops; `zone`/`feature` (zone-like) → `EntityService` area ops + `GeometadataService`; `delivery` → `DeliveryService`; `poi` → `PoiService`; `text_label` → `TextLabelService`; `alert` → `AlertService`; `feature` with `feature_type === 'road'` → `RoadEditorStateService`.
+- Event routing table: `worker` → `EntityService` token ops; `plant` → `EntityService` plant ops; `zone`/`feature` (zone-like) → `EntityService` area ops + `GeometadataService`; `delivery` → `DeliveryService` (SyncCoordinator dedup); `poi` → `PoiService` (SyncCoordinator dedup); `text_label` → `TextLabelService` (SyncCoordinator dedup); `alert` → `AlertService` (SyncCoordinator dedup); `feature` with `feature_type === 'road'` → `RoadEditorStateService`; `contractor` config events → contractor logo sync.
 - Batch routing accumulates worker/plant creates/updates/deletes into single store emissions; complex types defer to per-event routing.
 - Delete side effects: clear multi-selection, typed selection, and mark undo stack stale before calling handler.
 - Offline queue deduplication: `create` followed by `delete` = drop both; `update` followed by `update` = merge payloads (later wins); `create` followed by `update` = fold into create payload.

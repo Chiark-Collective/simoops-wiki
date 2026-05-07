@@ -25,7 +25,7 @@ touches:
   - requestAnimationFrame
 external:
   - geogrid-maplibre-gl
-last_verified_commit: f9606469ce367229c5c91e03c3ba917779015030
+last_verified_commit: c56ee3d5e04d0143a312d17b22ca262eaa150bd2
 ---
 
 ## Purpose
@@ -67,17 +67,18 @@ Visual overlays and effects on the SimOops map: metric grid, distance measuremen
 - `app/map/map-patterns.ts::createDropzoneCrosshatchPattern` — Canvas pattern for crane drop zones.
 - `app/map/map-patterns.ts::createDropzoneCrosshatchPatternPump` — Canvas pattern for concrete pump drop zones.
 - `app/map/map-patterns.ts::createBuildingCrosshatchPattern` — Canvas pattern for building fills.
-- `app/map/map-svg-icons.ts::SvgIconManager` — Zoom-adaptive SVG rasterization via `zoomend`.
+- `app/map/map-svg-icons.ts::SvgIconManager` — Zoom-adaptive SVG rasterization via `zoomend`; re-rasterizes when needed size exceeds current by >50% or shrinks below 25%
 - `app/map/map-svg-icons.ts::createResizeArrowIcon` — SDF diamond arrow for resize/radius handles.
 - `app/map/map-svg-icons.ts::createAreaIcon` — Hidden-area marker icon.
 - `app/map/map-svg-icons.ts::createRoadIcon` — Hidden-road marker icon.
-- `app/map/map-svg-icons.ts::generatePoiPinIcons` — Per-type POI pin generation.
-- `app/map/map-svg-icons.ts::generateAlertPinIcon` — Alert triangle pin generation.
-- `app/map/map-svg-icons.ts::ensureDeliveryPinIcon` — Per-contractor-colour delivery teardrop pin with truck glyph.
-- `app/map/map-svg-icons.ts::ensureBuildingBadgeImage` — Cached canvas badge for upper-floor worker/area counts.
+- `app/map/map-svg-icons.ts::generatePoiPinIcons` — Per-type POI pin generation (fire extinguisher, medic, fire assembly, smoke shelter, generic) as full-colour 128px canvas images.
+- `app/map/map-svg-icons.ts::generateAlertPinIcon` — Amber triangle with exclamation mark.
+- `app/map/map-svg-icons.ts::ensureDeliveryPinIcon` — Per-contractor-colour delivery teardrop pin with truck glyph; lazily generated and cached per unique hex colour.
+- `app/map/map-svg-icons.ts::ensureBuildingBadgeImage` — Pre-rendered building badge with worker count + area count as cached canvas images; uses `drawHardhatGlyph` and `drawHexagonGlyph`.
+- `app/map/map-svg-icons.ts::contractorLogoImageId()` / `ensureContractorLogoIcon()` / `removeContractorLogoIcon()` — Full contractor logo pipeline: loads raster/SVG, crops transparent letterbox, inscribes into circle with contractor-coloured border, registers as MapLibre image. Uses `CONTRACTOR_LOGO_INSCRIBE_FACTOR` (0.94) for sizing relative to token/plant circle.
 
 ### Source utilities
-- `app/map/map-source-utils.ts::RecreatableMapSource` — Typed wrapper around a GeoJSON source + layers. Owns the empty→populated recreation workaround for the Zone.js/MapLibre bug, then replays recorded `setFilter` / `setFeatureState` / `setLayoutProperty` / `setPaintProperty` calls so dynamic state survives the recreate cycle.
+- `app/map/map-source-utils.ts::RecreatableMapSource` — Typed wrapper around a GeoJSON source + layers. Owns the empty→populated recreation workaround for the Zone.js/MapLibre bug, then replays recorded `setFilter` / `setFeatureState` / `setLayoutProperty` / `setPaintProperty` calls so dynamic state survives the recreate cycle. Caps replay log at 10,000 entries.
 - `app/map/map-source-utils.ts::updateGeoJsonSource` / `recreateGeoJsonSource` / `updateGeoJsonSourceWithRecreate` — Free-function helpers for the same workaround.
 - `app/map/map-source-utils.ts::mapEventSignal` — Bridges a MapLibre event into an Angular signal, unregistering on `DestroyRef` destroy. Needed because MapLibre handlers fire outside NgZone and `markForCheck` races under worker contention.
 

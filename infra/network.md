@@ -27,6 +27,8 @@ All services share a default bridge network (`simoops_default`).
 | `/ws` | backend:8000 (WebSocket upgrade) |
 | `/` | ui:4200 (static SPA) |
 | `/auth/*` | keycloak:8080 |
+| `/resources/*` | keycloak:8080 | Keycloak theme CSS/fonts (was falling through to SPA catch-all) |
+| `/js/*` | keycloak:8080 | Keycloak JS (`keycloak.js`) (was falling through to SPA catch-all) |
 | `/tiles/*` | titiler:8088 |
 | `/minio/*` | minio:9001 (console) |
 

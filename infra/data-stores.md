@@ -41,6 +41,26 @@ owner_team: infrastructure
 - No persistence configured; restart clears ephemeral state
 - Fallback to in-memory buffer when unavailable
 
+## Keycloak
+
+| Parameter | Value |
+|---|---|
+| Image | `quay.io/keycloak/keycloak:24.0` |
+| Port | 8080 (app), 9000 (management) |
+| Data volume | `keycloak-data` (Docker named volume) |
+| Database | H2 (dev), external (prod) |
+
+### Access
+
+- Backend: Admin REST API for user provisioning
+- UI: OIDC login redirect
+- Caddy: `/resources/*` and `/js/*` proxied for theme static assets
+
+### Quirks
+
+- `keycloak-data` volume persists H2 database, sessions, and theme settings across restarts
+- Health check probes port 9000 (management), not 8080
+
 ## Minio
 
 | Parameter | Value |
